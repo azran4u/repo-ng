@@ -1,19 +1,21 @@
 import { AzureFunction, Context } from "@azure/functions";
-const puppeteer = require("puppeteer");
+import { createApp } from "../src/main";
 
 const timerTrigger: AzureFunction = async function (
   context: Context,
   myTimer: any
 ): Promise<void> {
+  console.log("starting app");
+  console.log = (...args) => context.log(...args);
+  console.info = (...args) => context.log(...args);
+  console.warn = (...args) => context.log(...args);
+  console.error = (...args) => context.log(...args);
+  console.debug = (...args) => context.log(...args);
+  console.log("starting app");
   try {
-    const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
-    await page.goto("https://google.com/");
-    const screenshotBuffer = await page.screenshot({ fullPage: true });
-    context.log(`read google.com`);
-    await browser.close();
+    await createApp();
   } catch (error) {
-    context.log(error);
+    console.error(error);
   }
 };
 
