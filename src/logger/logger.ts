@@ -1,5 +1,5 @@
-import { format, Logger, LoggerOptions, transports } from "winston";
-const { combine, timestamp, printf } = format;
+import { format, Logger, LoggerOptions } from "winston";
+const { printf } = format;
 import { Logger as AzureFunctionLogger } from "@azure/functions";
 import Transport from "winston-transport";
 
@@ -41,12 +41,12 @@ class AzureFunctionTransport extends Transport {
   log(info: { message: string; level: string; service: string }, callback) {
     if (info.level === "info") {
       this.logger.info(info.message);
-    }
-    if (info.level === "error") {
+    } else if (info.level === "error") {
       this.logger.error(info.message);
-    }
-    if (info.level === "debug") {
+    } else if (info.level === "debug") {
       this.logger.verbose(info.message);
+    } else {
+      this.logger.info(info.message);
     }
     callback();
   }

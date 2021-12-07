@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "tsc && cp lessons.json dist",
+    "build": "rm -rf dist && tsc && cp lessons.json dist",
     "watch": "tsc -w",
     "prestart": "npm run build",
     "start": "func start",
