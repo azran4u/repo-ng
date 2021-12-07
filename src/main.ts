@@ -7,10 +7,12 @@ import path = require("path");
 import { Logger } from "winston";
 import { AppModule } from "./app.module";
 import { AppService } from "./app.service";
-
-export async function createApp() {
+import { Logger as AzureFunctionLogger } from "@azure/functions";
+export async function createApp(azureFunctionLogger: AzureFunctionLogger) {
   try {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(
+      AppModule.register(azureFunctionLogger)
+    );
     const logger = app.get<Logger>(WINSTON_MODULE_PROVIDER);
     app.useLogger(logger);
     logger.info(`Start app`);
