@@ -7,7 +7,10 @@ import { configFactory } from "./config/config.factory";
 import { ScrapModule } from "./scrap/scrap.module";
 import path = require("path");
 import { Logger } from "@azure/functions";
-@Module({})
+import { TelegramModule } from "./telegram/telegram.module";
+@Module({
+  imports: [TelegramModule],
+})
 export class AppModule {
   static register(logger: Logger): DynamicModule {
     return {
@@ -23,7 +26,8 @@ export class AppModule {
         WinstonModule.forRootAsync({
           useFactory: (configService: ConfigService) => {
             return loggerOptionsFactory(
-              configService.get("logger.level", { infer: true }), logger
+              configService.get("logger.level", { infer: true }),
+              logger
             );
           },
           inject: [ConfigService],

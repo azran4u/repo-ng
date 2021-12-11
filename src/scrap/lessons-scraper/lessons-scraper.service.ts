@@ -7,6 +7,7 @@ import * as _ from "lodash";
 import { Lesson } from "../../model/lesson";
 import { LessonsPersistencyService } from "../lessons-persistency/lessons-persistency.service";
 import { ConfigService } from "@nestjs/config";
+import { NotificationsService } from "../../telegram/notifications/notifications.service";
 
 @Injectable()
 export class LessonsScraperService {
@@ -16,7 +17,8 @@ export class LessonsScraperService {
     @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
     private configService: ConfigService,
     private browserService: BrowserService,
-    private lessonsPersistencyService: LessonsPersistencyService
+    private lessonsPersistencyService: LessonsPersistencyService,
+    private telegramService: NotificationsService
   ) {
     this.logger.info(`LessonsScraperService constructor`);
     this.url = this.configService.get("scrap.rabbiUrl", { infer: true });
@@ -25,8 +27,10 @@ export class LessonsScraperService {
 
   public async scrapController() {
     try {
+      await this.telegramService.sendMessage("start scraping");
       const lessons: Lesson[] =
         await this.lessonsPersistencyService.readLessonsFromFile();
+      await this.logAndTelegram(`total of ${lessons.length} lessons from file`);
       const pageUrls = await this.rabbiPagination(this.url);
       for (let page of pageUrls) {
         const lessonsUrls = await this.extractLessonsUrlsFromRabbiPage(page);
@@ -44,14 +48,22 @@ export class LessonsScraperService {
           this.logger.info(`${page} ${lesson.id} saved to file`);
         }
       }
+      await this.logAndTelegram(`total of ${lessons.length} lessons from site`);
       const browser = await this.browserService.getBrowser();
       await browser.close();
-      this.logger.info(`lessons count is ${lessons.length}`);
-    } catch (err) {
-      this.logger.error("Could not resolve the browser instance => ", err);
+    } catch (error) {
+      await this.logAndTelegram(`error in scrapController ${error}`, "error");
     }
   }
 
+  private async logAndTelegram(message: string, level?: string) {
+    if (level === "error") {
+      this.logger.error(message);
+    } else {
+      this.logger.info(message);
+    }
+    await this.telegramService.sendMessage(message);
+  }
   public async genericScrapper<T>(
     url: string,
     f: (x: Page) => Promise<T>

@@ -23,14 +23,9 @@ export class LessonsPersistencyService {
         encoding: "utf8",
       });
       const data: Scrap = JSON.parse(res);
-      this.logger.info(
-        `read ${data.lessons.length} lessons file from ${this.path}`
-      );
       return data.lessons;
     } catch (error) {
-      this.logger.error(
-        `could not read lessons file from ${this.path} ${error}`
-      );
+      throw new Error(`could not read lessons file from ${this.path} ${error}`);
     }
   }
 
