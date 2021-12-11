@@ -1,13 +1,11 @@
 import { NestFactory } from "@nestjs/core";
-import {
-  WINSTON_MODULE_NEST_PROVIDER,
-  WINSTON_MODULE_PROVIDER,
-} from "nest-winston";
+import { WINSTON_MODULE_PROVIDER } from "nest-winston";
 import path = require("path");
 import { Logger } from "winston";
 import { AppModule } from "./app.module";
 import { AppService } from "./app.service";
 import { Logger as AzureFunctionLogger } from "@azure/functions";
+
 export async function createApp(azureFunctionLogger: AzureFunctionLogger) {
   try {
     const app = await NestFactory.create(
