@@ -42,7 +42,7 @@ export function configFactory(): Configuration {
     },
     objectStorage: {
       connectionString: process.env.OBJECT_STORAGE_CONNECTION_STRING,
-      containerName: process.env.OBJECT_STORAGE_CONTAINER_NAME,
+      containerName: process.env.OBJECT_STORAGE_CONTAINER_NAME || "lessons",
     },
   };
 }
