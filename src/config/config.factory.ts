@@ -11,10 +11,17 @@ export interface TelegramConfig {
   token: string;
   chatId: string;
 }
+
+export interface ObjectStorageConfig {
+  connectionString: string;
+  containerName: string;
+}
+
 export interface Configuration {
   logger: LoggerConfig;
   scrap: ScrapConfig;
   telegram: TelegramConfig;
+  objectStorage: ObjectStorageConfig;
 }
 
 export function configFactory(): Configuration {
@@ -32,6 +39,10 @@ export function configFactory(): Configuration {
     telegram: {
       token: process.env.TELEGRAM_TOKEN,
       chatId: process.env.TELEGRAM_CHAT_ID || "-607122249",
+    },
+    objectStorage: {
+      connectionString: process.env.OBJECT_STORAGE_CONNECTION_STRING,
+      containerName: process.env.OBJECT_STORAGE_CONTAINER_NAME,
     },
   };
 }
