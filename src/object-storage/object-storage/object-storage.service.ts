@@ -3,28 +3,27 @@ import { Inject, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { WINSTON_MODULE_PROVIDER } from "nest-winston";
 import { Logger } from "winston";
+import { Lesson } from "../../model/lesson";
+import { RabbiEnum } from "../../model/rabi.enum";
+import { Snapshot } from "../../model/snapshot";
+import { NotificationsService } from "../../telegram/notifications/notifications.service";
 
 @Injectable()
 export class ObjectStorageService {
-  private accountName: string;
   private connectionString: string;
-  private key: string;
   private containerName: string;
   private blobServiceClient: BlobServiceClient;
   private containerClient: ContainerClient;
   constructor(
     private configService: ConfigService,
-    @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger
+    @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
+    private telegramService: NotificationsService
   ) {
     this.logger.info(`LessonsPersistencyService constructor`);
-    this.accountName = this.configService.get("objectStorage.accountName", {
-      infer: true,
-    });
     this.connectionString = this.configService.get(
       "objectStorage.connectionString",
       { infer: true }
     );
-    this.key = this.configService.get("objectStorage.key", { infer: true });
     this.containerName = this.configService.get("objectStorage.containerName", {
       infer: true,
     });
@@ -36,12 +35,109 @@ export class ObjectStorageService {
     );
   }
 
-  async listObjects(): Promise<string[]> {
+  async storeSnapshot(snapshot: Snapshot) {
+    const content = JSON.stringify(snapshot.lessons);
+    const blobName = this.snapshotToBlobName(snapshot);
+    const blockBlobClient = this.containerClient.getBlockBlobClient(blobName);
+    try {
+      await blockBlobClient.upload(content, Buffer.byteLength(content));
+    } catch (error) {
+      throw new Error(
+        `uploading blob ${blobName} to object storage failed ${error}`
+      );
+    }
+    try {
+      await this.garbageCollector();
+    } catch (error) {
+      throw new Error(`object storage garbage collector failed ${error}`);
+    }
+  }
+
+  async getRabbiLastSnapshot(rabbi: RabbiEnum): Promise<Snapshot> {
+    const snapshots = await this.getAllSnapshots();
+    const rabbiSnapshots = snapshots.filter(
+      (snapshot) => snapshot.rabbi === rabbi
+    );
+    const lastSnapshot = rabbiSnapshots.reduce(
+      (prev, curr) => {
+        if (curr.date.getTime() > prev.date.getTime())
+          return { rabbi: rabbi, date: curr.date, lessons: prev.lessons };
+      },
+      { rabbi: rabbi, date: new Date(0), lessons: [] }
+    );
+    const blobName = this.snapshotToBlobName(lastSnapshot);
+    const blockBlobClient = this.containerClient.getBlockBlobClient(blobName);
+    let buffer: Buffer;
+    try {
+      buffer = await blockBlobClient.downloadToBuffer();
+    } catch (error) {
+      throw new Error(`downloading blob ${blobName} failed ${error}`);
+    }
+    let lessons: Lesson[];
+    try {
+      lessons = JSON.parse(buffer.toString());
+    } catch (error) {
+      throw new Error(`parsing blob content has failed ${error}`);
+    }
+    return { ...lastSnapshot, lessons };
+  }
+
+  public async garbageCollector() {
+    const snapshots = await this.getAllSnapshots();
+    for (let rabbi of Object.values(RabbiEnum)) {
+      const rabbiLastSnapshot = await this.getRabbiLastSnapshot(rabbi);
+      const snapshotsToDelete = snapshots.filter(
+        (snapshot) =>
+          snapshot.rabbi === rabbi &&
+          snapshot.date.getTime() !== rabbiLastSnapshot.date.getTime()
+      );
+      for (let snapshot of snapshotsToDelete) {
+        const blobName = this.snapshotToBlobName(snapshot);
+        const blockBlobClient = this.containerClient.getBlobClient(blobName);
+        try {
+          await blockBlobClient.deleteIfExists();
+        } catch (error) {
+          throw new Error(`deletion of blob ${blobName} failed ${error}`);
+        }
+      }
+      const message = `garbage collector deleted ${snapshotsToDelete.length} snapshots for rabbi ${rabbi}`;
+      this.logger.info(message);
+      await this.telegramService.sendMessage(message);
+    }
+  }
+
+  private async getAllSnapshots() {
+    const blobs = await this.listObjects();
+    const snapshots = blobs.map((blob) => this.blobNameToSnapshot(blob));
+    return snapshots;
+  }
+  private async listObjects(): Promise<string[]> {
     const res: string[] = [];
     let iter = this.containerClient.listBlobsFlat();
-    for await (const blob of iter) {
-      res.push(blob.name);
+    try {
+      for await (const blob of iter) {
+        res.push(blob.name);
+      }
+    } catch (error) {
+      throw new Error(
+        `list container objects ${this.containerClient.containerName} failed ${error}`
+      );
     }
     return res;
+  }
+
+  private snapshotToBlobName(snapshot: Snapshot): string {
+    return `${snapshot.rabbi};;${snapshot.date.getTime()}`;
+  }
+
+  private blobNameToSnapshot(blobName: string): Snapshot {
+    const res = blobName.split(";;");
+    if (res.length !== 2) throw new Error(`blob name ${blobName} is invalid`);
+    const [rabbi, time] = res;
+    return {
+      rabbi: RabbiEnum[rabbi],
+      date: new Date(+time),
+      lessons: [],
+    };
   }
 }

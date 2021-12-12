@@ -5,12 +5,10 @@ import { AppService } from "./app.service";
 import { loggerOptionsFactory } from "./logger/logger";
 import { configFactory } from "./config/config.factory";
 import { ScrapModule } from "./scrap/scrap.module";
-import path = require("path");
 import { Logger } from "@azure/functions";
 import { TelegramModule } from "./telegram/telegram.module";
-import { ObjectStorageModule } from './object-storage/object-storage.module';
 @Module({
-  imports: [TelegramModule, ObjectStorageModule],
+  imports: [TelegramModule],
 })
 export class AppModule {
   static register(logger: Logger): DynamicModule {

@@ -5,9 +5,11 @@ import { Page } from "puppeteer";
 import { BrowserService } from "../browser/browser.service";
 import * as _ from "lodash";
 import { Lesson } from "../../model/lesson";
-import { LessonsPersistencyService } from "../lessons-persistency/lessons-persistency.service";
 import { ConfigService } from "@nestjs/config";
 import { NotificationsService } from "../../telegram/notifications/notifications.service";
+import { ObjectStorageService } from "../../object-storage/object-storage/object-storage.service";
+import { RabbiEnum } from "../../model/rabi.enum";
+import { Snapshot } from "../../model/snapshot";
 
 @Injectable()
 export class LessonsScraperService {
@@ -17,7 +19,7 @@ export class LessonsScraperService {
     @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
     private configService: ConfigService,
     private browserService: BrowserService,
-    private lessonsPersistencyService: LessonsPersistencyService,
+    private objectStorgaeService: ObjectStorageService,
     private telegramService: NotificationsService
   ) {
     this.logger.info(`LessonsScraperService constructor`);
@@ -27,10 +29,14 @@ export class LessonsScraperService {
 
   public async scrapController() {
     try {
+      const rabbi = RabbiEnum.RABBI_FIREMAN;
       await this.telegramService.sendMessage("start scraping");
-      const lessons: Lesson[] =
-        await this.lessonsPersistencyService.readLessonsFromFile();
-      await this.logAndTelegram(`total of ${lessons.length} lessons from file`);
+      const lessons: Lesson[] = await (
+        await this.objectStorgaeService.getRabbiLastSnapshot(rabbi)
+      ).lessons;
+      await this.logAndTelegram(
+        `read ${lessons.length} lessons of rabbi ${rabbi} from object storage`
+      );
       const pageUrls = await this.rabbiPagination(this.url);
       for (let page of pageUrls) {
         const lessonsUrls = await this.extractLessonsUrlsFromRabbiPage(page);
@@ -44,11 +50,18 @@ export class LessonsScraperService {
             this.logger.info(`${lessonUrl} is invalid`);
           }
           lessons.push(lesson);
-          await this.lessonsPersistencyService.saveLessonsToFile(lessons);
-          this.logger.info(`${page} ${lesson.id} saved to file`);
+          this.logger.info(`${page} ${lesson.id} saved`);
         }
       }
-      await this.logAndTelegram(`total of ${lessons.length} lessons from site`);
+      const snapshot: Snapshot = {
+        rabbi,
+        date: new Date(),
+        lessons,
+      };
+      await this.objectStorgaeService.storeSnapshot(snapshot);
+      await this.logAndTelegram(
+        `total of ${snapshot.lessons.length} lessons for rabbi ${snapshot.rabbi} saved to object storage`
+      );
       const browser = await this.browserService.getBrowser();
       await browser.close();
     } catch (error) {
