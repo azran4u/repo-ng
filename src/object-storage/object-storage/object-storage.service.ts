@@ -7,7 +7,8 @@ import { Lesson } from "../../model/lesson";
 import { RabbiEnum } from "../../model/rabi.enum";
 import { Snapshot } from "../../model/snapshot";
 import { NotificationsService } from "../../telegram/notifications/notifications.service";
-
+import serialize from "serialize-javascript";
+import * as _ from "lodash";
 @Injectable()
 export class ObjectStorageService {
   private connectionString: string;
@@ -24,6 +25,8 @@ export class ObjectStorageService {
       "objectStorage.connectionString",
       { infer: true }
     );
+    if (!this.connectionString)
+      throw new Error(`please set OBJECT_STORAGE_CONNECTION_STRING`);
     this.containerName = this.configService.get("objectStorage.containerName", {
       infer: true,
     });
@@ -36,7 +39,7 @@ export class ObjectStorageService {
   }
 
   async storeSnapshot(snapshot: Snapshot) {
-    const content = JSON.stringify(snapshot.lessons);
+    const content = serialize(snapshot.lessons);
     const blobName = this.snapshotToBlobName(snapshot);
     const blockBlobClient = this.containerClient.getBlockBlobClient(blobName);
     try {
@@ -54,17 +57,23 @@ export class ObjectStorageService {
   }
 
   async getRabbiLastSnapshot(rabbi: RabbiEnum): Promise<Snapshot> {
+    const initialSnapshot: Snapshot = {
+      rabbi: rabbi,
+      date: new Date(0),
+      lessons: [],
+    };
     const snapshots = await this.getAllSnapshots();
     const rabbiSnapshots = snapshots.filter(
       (snapshot) => snapshot.rabbi === rabbi
     );
-    const lastSnapshot = rabbiSnapshots.reduce(
-      (prev, curr) => {
-        if (curr.date.getTime() > prev.date.getTime())
-          return { rabbi: rabbi, date: curr.date, lessons: prev.lessons };
-      },
-      { rabbi: rabbi, date: new Date(0), lessons: [] }
-    );
+    if (_.isEmpty(rabbiSnapshots)) {
+      return initialSnapshot;
+    }
+    const lastSnapshot = rabbiSnapshots.reduce((prev, curr) => {
+      if (curr.date.getTime() > prev.date.getTime())
+        return { rabbi: rabbi, date: curr.date, lessons: prev.lessons };
+    }, initialSnapshot);
+
     const blobName = this.snapshotToBlobName(lastSnapshot);
     const blockBlobClient = this.containerClient.getBlockBlobClient(blobName);
     let buffer: Buffer;
@@ -75,7 +84,7 @@ export class ObjectStorageService {
     }
     let lessons: Lesson[];
     try {
-      lessons = JSON.parse(buffer.toString());
+      lessons = this.deserialize(buffer.toString());
     } catch (error) {
       throw new Error(`parsing blob content has failed ${error}`);
     }
@@ -139,5 +148,9 @@ export class ObjectStorageService {
       date: new Date(+time),
       lessons: [],
     };
+  }
+
+  private deserialize(serializedJavascript: string) {
+    return eval("(" + serializedJavascript + ")");
   }
 }
