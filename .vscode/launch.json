@@ -2,11 +2,30 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Attach to Node Functions",
+      "name": "debug",
       "type": "node",
-      "request": "attach",
-      "port": 9229,
-      "preLaunchTask": "func: host start"
+      "preLaunchTask": "build",
+      "request": "launch",
+      "program": "${workspaceFolder}/dist/server.js",
+      "sourceMaps": true,
+      "smartStep": true,
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnFirstSessionStart"
+    },
+    {
+      "name": "mocha",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/_mocha",
+      "preLaunchTask": "build",
+      "args": [
+        "--timeout",
+        "999999",
+        "--colors",
+        "'${workspaceFolder}/dist/tests/*.spec.js'"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }
