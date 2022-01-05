@@ -3,19 +3,24 @@ import { WINSTON_MODULE_PROVIDER } from "nest-winston";
 import { Logger } from "winston";
 import { AppModule } from "./app.module";
 
-import { ValidationPipe } from "@nestjs/common";
+import { INestApplication, ValidationPipe } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 
 async function bootstrap() {
+  let app: INestApplication;
   try {
-    const app = await NestFactory.create(AppModule);
-    app.useGlobalPipes(new ValidationPipe());
-    const logger = app.get<Logger>(WINSTON_MODULE_PROVIDER);
-    app.useLogger(logger);
-    logger.info(`Starting app`);
-    await app.listen(3000);
-    console.log(`Application is running on: ${await app.getUrl()}`);
+    app = await NestFactory.create(AppModule);
   } catch (error) {
     console.error(`nest factory error ${error}`);
+  }
+  const logger = app.get<Logger>(WINSTON_MODULE_PROVIDER);
+  const port = app.get(ConfigService).get("server.port", { infer: true });
+  app.useGlobalPipes(new ValidationPipe());
+  try {
+    await app.listen(port);
+    logger.info(`Application is running on: ${await app.getUrl()}`);
+  } catch (error) {
+    logger.error(`nest factory error ${error}`);
   }
 }
 bootstrap();

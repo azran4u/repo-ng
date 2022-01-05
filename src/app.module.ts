@@ -1,9 +1,12 @@
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { WinstonModule } from "nest-winston";
 import { loggerOptionsFactory } from "./logger/logger";
 import { configFactory } from "./config/config.factory";
 import { GraphQLModule } from "@nestjs/graphql";
+import { CommonModule } from "./common/common.module";
+import { GraphqlExtractOperationMiddleware } from "./utils/graphql-extract-operation-middlewatr";
+import { json } from "express";
 
 @Module({
   imports: [
@@ -24,8 +27,12 @@ import { GraphQLModule } from "@nestjs/graphql";
     GraphQLModule.forRoot({
       typePaths: ["./**/*.graphql"],
       installSubscriptionHandlers: true,
-      
     }),
+    CommonModule,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(json(), GraphqlExtractOperationMiddleware).forRoutes("*");
+  }
+}

@@ -6,7 +6,7 @@
       "type": "node",
       "preLaunchTask": "build",
       "request": "launch",
-      "program": "${workspaceFolder}/dist/server.js",
+      "program": "${workspaceFolder}/dist/src/main.js",
       "sourceMaps": true,
       "smartStep": true,
       "console": "internalConsole",
