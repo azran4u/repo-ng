@@ -7,6 +7,7 @@ import { GraphQLModule } from "@nestjs/graphql";
 import { CommonModule } from "./common/common.module";
 import { GraphqlExtractOperationMiddleware } from "./utils/graphql-extract-operation-middlewatr";
 import { json } from "express";
+import { RequestDurationMiddleware } from "./utils/express-request-duration";
 
 @Module({
   imports: [
@@ -33,6 +34,12 @@ import { json } from "express";
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(json(), GraphqlExtractOperationMiddleware).forRoutes("*");
+    consumer
+      .apply(
+        json(),
+        RequestDurationMiddleware,
+        GraphqlExtractOperationMiddleware
+      )
+      .forRoutes("*");
   }
 }

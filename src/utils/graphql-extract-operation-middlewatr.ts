@@ -27,7 +27,6 @@ export class GraphqlExtractOperationMiddleware implements NestMiddleware {
 
     if (operationName && operationType && subOperation) {
       req.graphql = { operationName, operationType, subOperation };
-      this.logger.info(`${JSON.stringify(req.graphql)}`);
     }
     next();
   }
