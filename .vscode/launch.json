@@ -10,6 +10,7 @@
       "sourceMaps": true,
       "smartStep": true,
       "console": "internalConsole",
+      "outputCapture": "std",
       "internalConsoleOptions": "openOnFirstSessionStart"
     },
     {
@@ -25,7 +26,8 @@
         "'${workspaceFolder}/dist/tests/*.spec.js'"
       ],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "internalConsoleOptions": "neverOpen",
+      "outputCapture": "std"
     }
   ]
 }

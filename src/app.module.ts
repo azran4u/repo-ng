@@ -8,6 +8,7 @@ import { CommonModule } from "./common/common.module";
 import { GraphqlExtractOperationMiddleware } from "./utils/graphql-extract-operation-middlewatr";
 import { json } from "express";
 import { RequestDurationMiddleware } from "./utils/express-request-duration";
+import { CatsModule } from "./entities/cats/cats.module";
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { RequestDurationMiddleware } from "./utils/express-request-duration";
       installSubscriptionHandlers: true,
     }),
     CommonModule,
+    CatsModule,
   ],
 })
 export class AppModule {

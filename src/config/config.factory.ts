@@ -3,6 +3,11 @@ export interface ServerConfig {
 }
 export interface LoggerConfig {
   level: string;
+  logging: {
+    logGraphqlIntrospectionRequests?: boolean;
+    logGraphqlEntitiesRequests?: boolean;
+    logNonGraphqlRequests?: boolean;
+  };
 }
 
 export interface Configuration {
@@ -13,10 +18,15 @@ export interface Configuration {
 export function configFactory(): Configuration {
   return {
     server: {
-      port: 3500,
+      port: +process.env.SERVER_PORT || 3500,
     },
     logger: {
       level: process.env.LOGGER_LEVEL || "info",
+      logging: {
+        logGraphqlEntitiesRequests: true,
+        logGraphqlIntrospectionRequests: false,
+        logNonGraphqlRequests: false,
+      },
     },
   };
 }

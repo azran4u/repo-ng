@@ -14,7 +14,7 @@ async function bootstrap() {
     console.error(`nest factory error ${error}`);
   }
   const logger = app.get<Logger>(WINSTON_MODULE_PROVIDER);
-  const port = app.get(ConfigService).get("server.port", { infer: true });
+  const port = app.get(ConfigService).get<number>("server.port");
   app.useGlobalPipes(new ValidationPipe());
   try {
     await app.listen(port);
