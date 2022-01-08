@@ -10,6 +10,7 @@
 export class CreateCatInput {
     name?: Nullable<string>;
     age?: Nullable<number>;
+    ownerId?: Nullable<number>;
 }
 
 export abstract class IQuery {
@@ -19,7 +20,7 @@ export abstract class IQuery {
 }
 
 export abstract class IMutation {
-    abstract createCat(createCatInput?: Nullable<CreateCatInput>): Nullable<Cat> | Promise<Nullable<Cat>>;
+    abstract createCat(createCatInput?: Nullable<Nullable<CreateCatInput>[]>): Nullable<Nullable<Cat>[]> | Promise<Nullable<Nullable<Cat>[]>>;
 }
 
 export abstract class ISubscription {

@@ -16,5 +16,5 @@
     "strict": false,
     "esModuleInterop": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "knexfile.ts"]
 }

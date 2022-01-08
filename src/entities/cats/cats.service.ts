@@ -1,23 +1,31 @@
-import { Injectable } from '@nestjs/common';
-import { Cat } from '../../graphql.schema';
+import { Injectable } from "@nestjs/common";
+import { Knex } from "knex";
+import { InjectKnex } from "nestjs-knex";
+import { Cat } from "../../graphql.schema";
+import { CreateCatDto } from "./dto/create-cat.dto";
 
 @Injectable()
 export class CatsService {
-  private readonly cats: Array<Cat & { ownerId?: number }> = [
-    { id: 1, name: 'Cat', age: 5, ownerId: 1 },
-  ];
+  constructor(@InjectKnex() private readonly knex: Knex) {}
 
-  create(cat: Cat): Cat {
-    cat.id = this.cats.length + 1;
-    this.cats.push(cat);
-    return cat;
+  async create(cat: CreateCatDto[]): Promise<Cat[]> {
+    //@ts-ignore
+    return this.knex<CreateCatDto[]>("cats")
+      .insert(cat)
+      .onConflict("id")
+      .merge()
+      .returning("*");
+
+    // cat.id = this.cats.length + 1;
+    // this.cats.push(cat);
+    // return cat;
   }
 
-  findAll(): Cat[] {
-    return this.cats;
+  async findAll(): Promise<Cat[]> {
+    return this.knex.select<Cat>().table("cats");
   }
 
-  findOneById(id: number): Cat {
-    return this.cats.find(cat => cat.id === id);
+  async findOneById(id: number): Promise<Cat> {
+    return this.knex<Cat>("cats").where("id", id).first();
   }
 }
