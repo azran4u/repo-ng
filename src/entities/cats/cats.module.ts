@@ -1,7 +1,5 @@
 import { Module } from "@nestjs/common";
-import { APP_INTERCEPTOR } from "@nestjs/core";
 import { KnexModule } from "nestjs-knex";
-import { DataLoaderInterceptor } from "../../common/dataloader";
 import { getKnexConfig } from "../../utils/getKnexConfig";
 import { OwnersModule } from "../owners/owners.module";
 import { CatOwnerResolver } from "./cat-owner.resolver";
