@@ -1,6 +1,5 @@
 import { Module } from "@nestjs/common";
 import { KnexModule } from "nestjs-knex";
-import * as knexfile from "../../../knexfile";
 import { getKnexConfig } from "../../utils/getKnexConfig";
 import { OwnersService } from "./owners.service";
 

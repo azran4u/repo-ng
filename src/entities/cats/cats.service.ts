@@ -14,16 +14,6 @@ export class CatsService {
     @InjectKnex() private readonly knex: Knex
   ) {
     knexLogger(this.knex, this.logger);
-    // const loggerCopy = this.logger;
-    // this.knex.on("query", function (queryData) {
-    //   if (loggerCopy.level === "debug")
-    //     loggerCopy.debug(
-    //       `${queryData?.sql} ${JSON.stringify(queryData?.bindings)}`
-    //     );
-    //   else {
-    //     loggerCopy.info(queryData?.sql);
-    //   }
-    // });
   }
 
   async create(cat: CreateCatDto[]): Promise<Cat[]> {
@@ -33,10 +23,6 @@ export class CatsService {
       .onConflict("id")
       .merge()
       .returning("*");
-
-    // cat.id = this.cats.length + 1;
-    // this.cats.push(cat);
-    // return cat;
   }
 
   async findAll(): Promise<Cat[]> {

@@ -1,0 +1,1 @@
+export const NEST_LOADER_CONTEXT_KEY: string = "NEST_LOADER_CONTEXT_KEY";

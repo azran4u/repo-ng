@@ -9,6 +9,9 @@ import { GraphqlExtractOperationMiddleware } from "./utils/graphql-extract-opera
 import { json } from "express";
 import { RequestDurationMiddleware } from "./utils/express-request-duration";
 import { CatsModule } from "./entities/cats/cats.module";
+import { OwnersModule } from "./entities/owners/owners.module";
+import { OwnersService } from "./entities/owners/owners.service";
+import { createOwnersLoader } from "./entities/owners/owners.loader";
 
 @Module({
   imports: [
@@ -26,9 +29,16 @@ import { CatsModule } from "./entities/cats/cats.module";
       },
       inject: [ConfigService],
     }),
-    GraphQLModule.forRoot({
-      typePaths: ["./**/*.graphql"],
-      installSubscriptionHandlers: true,
+    GraphQLModule.forRootAsync({
+      imports: [OwnersModule],
+      useFactory: (ownersService: OwnersService) => ({
+        typePaths: ["./**/*.graphql"],
+        context: () => ({
+          randomValue: Math.random(),
+          ownersLoader: createOwnersLoader(ownersService),
+        }),
+      }),
+      inject: [OwnersService],
     }),
     CommonModule,
     CatsModule,
