@@ -21,7 +21,7 @@ export function configFactory(): Configuration {
       port: +process.env.SERVER_PORT || 3500,
     },
     logger: {
-      level: process.env.LOGGER_LEVEL || "info",
+      level: process.env.LOGGER_LEVEL || "debug",
       logging: {
         logGraphqlEntitiesRequests: true,
         logGraphqlIntrospectionRequests: false,

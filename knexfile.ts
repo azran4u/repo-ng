@@ -34,6 +34,12 @@ const knexfile: Record<string, KnexConfig> = {
     migrations: {
       tableName: "knex_migrations",
     },
+    log: {
+      warn(message) {},
+      error(message) {},
+      deprecate(message) {},
+      debug(message) {},
+    },
   },
 };
 
