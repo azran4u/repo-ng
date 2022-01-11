@@ -1,3 +1,9 @@
+enum CatTypeEnum {
+  TYPE1
+  TYPE2
+  TYPE3
+}
+
 type Query {
   cats: [Cat]
   cat(id: ID!): Cat
@@ -23,10 +29,12 @@ type Cat {
   name: String
   age: Int
   owner: Owner
+  type: CatTypeEnum
 }
 
 input CreateCatInput {
   name: String
   age: Int
   ownerId: Int
+  type: CatTypeEnum
 }

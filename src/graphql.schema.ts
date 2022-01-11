@@ -7,10 +7,17 @@
 
 /* tslint:disable */
 /* eslint-disable */
+export enum CatTypeEnum {
+    TYPE1 = "TYPE1",
+    TYPE2 = "TYPE2",
+    TYPE3 = "TYPE3"
+}
+
 export class CreateCatInput {
     name?: Nullable<string>;
     age?: Nullable<number>;
     ownerId?: Nullable<number>;
+    type?: Nullable<CatTypeEnum>;
 }
 
 export abstract class IQuery {
@@ -39,6 +46,7 @@ export class Cat {
     name?: Nullable<string>;
     age?: Nullable<number>;
     owner?: Nullable<Owner>;
+    type?: Nullable<CatTypeEnum>;
 }
 
 type Nullable<T> = T | null;
