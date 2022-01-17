@@ -68,3 +68,19 @@ export async function down(knex: Knex): Promise<void> {
     .dropTableIfExists("items")
     .dropTableIfExists("classification_enum");
 }
+
+// select 'drop table "' || tablename || '" cascade;' from pg_tables where schemaname = 'public';
+// drop table "classification_enum" cascade;
+// drop table "storage_locations" cascade;
+// drop table "items" cascade;
+// drop table "storage_locations_enum" cascade;
+// drop table "containers" cascade;
+// drop table "office_qeuipment" cascade;
+// drop table "software" cascade;
+// drop table "office_forniture" cascade;
+// drop table "container_items" cascade;
+// drop table "knex_migrations" cascade;
+// drop table "knex_migrations_lock" cascade;
+// drop table "owners" cascade;
+// drop table "cats" cascade;
+// drop table "cat_types" cascade;
