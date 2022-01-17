@@ -10,6 +10,9 @@ function baseEntity(table: Knex.CreateTableBuilder, knex: Knex): void {
   table.boolean("is_deleted").notNullable().defaultTo(false);
   table.boolean("is_classified").notNullable().defaultTo(false);
   table.specificType("sec_groups", "text[]");
+  table.index("reality_id", undefined, "btree");
+  table.index("classification", undefined, "btree");
+  table.index("is_deleted", undefined, "btree");
 }
 
 export async function up(knex: Knex): Promise<void> {
@@ -23,18 +26,22 @@ export async function up(knex: Knex): Promise<void> {
     .createTable("items", (table) => {
       baseEntity(table, knex);
       table.string("name").notNullable();
+      table.index("name", undefined, "btree");
     })
     .createTable("office_qeuipment", (table) => {
-      table.uuid("item_id").references("items.id").notNullable();
+      table.uuid("item_id").primary().references("items.id").notNullable();
       table.boolean("is_fragile");
+      table.index("is_fragile", undefined, "btree");
     })
     .createTable("software", (table) => {
-      table.uuid("item_id").references("items.id").notNullable();
+      table.uuid("item_id").primary().references("items.id").notNullable();
       table.boolean("is_open_source");
+      table.index("is_open_source", undefined, "btree");
     })
     .createTable("office_forniture", (table) => {
-      table.uuid("item_id").references("items.id").notNullable();
+      table.uuid("item_id").primary().references("items.id").notNullable();
       table.boolean("is_wood");
+      table.index("is_wood", undefined, "btree");
     })
     .createTable("storage_locations", (table) => {
       baseEntity(table, knex);
@@ -42,6 +49,7 @@ export async function up(knex: Knex): Promise<void> {
         .string("name")
         .references("storage_locations_enum.type")
         .notNullable();
+      table.index("name", undefined, "btree");
     })
     .createTable("containers", (table) => {
       baseEntity(table, knex);
@@ -49,10 +57,12 @@ export async function up(knex: Knex): Promise<void> {
         .uuid("storage_locations_id")
         .references("storage_locations.id")
         .notNullable();
+      table.index("storage_locations_id", undefined, "btree");
     })
     .createTable("container_items", (table) => {
       table.uuid("item_id").references("items.id").notNullable();
       table.uuid("container_id").references("containers.id").notNullable();
+      table.primary(["item_id", "container_id"]);
     });
 }
 
