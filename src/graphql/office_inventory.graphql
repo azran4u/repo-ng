@@ -1,0 +1,172 @@
+scalar ZonedDateTime
+scalar BigInt
+
+enum Classification {
+  UNCLAS
+  SENSI
+  CONFID
+  SEC
+  TSEC
+  INTEL
+}
+
+interface BaseEntity {
+  id: String!
+  realityId: Int!
+  classification: Classification
+  createdBy: String!
+  creationTime: ZonedDateTime!
+  dataVersion: BigInt!
+  lastUpdateTime: ZonedDateTime
+  lastUpdateBy: String
+  isDeleted: Boolean
+  isClassified: Boolean
+  secGroups: [String]
+}
+
+interface BaseItem implements BaseEntity {
+  name: String
+
+  # Base Entity
+  id: String!
+  realityId: Int!
+  classification: Classification
+  createdBy: String!
+  creationTime: ZonedDateTime!
+  dataVersion: BigInt!
+  lastUpdateTime: ZonedDateTime
+  lastUpdateBy: String
+  isDeleted: Boolean
+  isClassified: Boolean
+  secGroups: [String]
+}
+
+type OfficeEquipment implements Item {
+  isFragile: Boolean
+
+  # Item
+  name: String
+
+  # Base Entity
+  id: String!
+  realityId: Int!
+  classification: Classification
+  createdBy: String!
+  creationTime: ZonedDateTime!
+  dataVersion: BigInt!
+  lastUpdateTime: ZonedDateTime
+  lastUpdateBy: String
+  isDeleted: Boolean
+  isClassified: Boolean
+  secGroups: [String]
+}
+
+type OfficeForniture implements Item {
+  isWood: Boolean
+
+  # Item
+  name: String
+
+  # Base Entity
+  id: String!
+  realityId: Int!
+  classification: Classification
+  createdBy: String!
+  creationTime: ZonedDateTime!
+  dataVersion: BigInt!
+  lastUpdateTime: ZonedDateTime
+  lastUpdateBy: String
+  isDeleted: Boolean
+  isClassified: Boolean
+  secGroups: [String]
+}
+
+type Software implements Item {
+  isOpenSource: Boolean
+
+  # Item
+  name: String
+
+  # Base Entity
+  id: String!
+  realityId: Int!
+  classification: Classification
+  createdBy: String!
+  creationTime: ZonedDateTime!
+  dataVersion: BigInt!
+  lastUpdateTime: ZonedDateTime
+  lastUpdateBy: String
+  isDeleted: Boolean
+  isClassified: Boolean
+  secGroups: [String]
+}
+
+union Item = OfficeEquipment | OfficeForniture | Software
+
+type Container implements BaseEntity {
+  items: [Item]!
+  location: StorageLocation!
+
+  # Base Entity
+  id: String!
+  realityId: Int!
+  classification: Classification
+  createdBy: String!
+  creationTime: ZonedDateTime!
+  dataVersion: BigInt!
+  lastUpdateTime: ZonedDateTime
+  lastUpdateBy: String
+  isDeleted: Boolean
+  isClassified: Boolean
+  secGroups: [String]
+}
+
+enum StorageLocationsEnum {
+  NORTH
+  CENTER
+  SOUTH
+}
+
+type StorageLocation implements BaseEntity {
+  location: StorageLocationsEnum!
+
+  # Base Entity
+  id: String!
+  realityId: Int!
+  classification: Classification
+  createdBy: String!
+  creationTime: ZonedDateTime!
+  dataVersion: BigInt!
+  lastUpdateTime: ZonedDateTime
+  lastUpdateBy: String
+  isDeleted: Boolean
+  isClassified: Boolean
+  secGroups: [String]
+}
+
+input AddOfficeEquipment {
+  isFragile: Boolean
+
+  # Item
+  name: String
+
+  # Base Entity without id
+  realityId: Int!
+  classification: Classification
+  createdBy: String!
+  creationTime: ZonedDateTime!
+  dataVersion: BigInt!
+  lastUpdateTime: ZonedDateTime
+  lastUpdateBy: String
+  isDeleted: Boolean
+  isClassified: Boolean
+  secGroups: [String]
+}
+
+type Mutation {
+  addOfficeEquipment(input: [AddOfficeEquipment]!): [OfficeEquipment]
+}
+
+type Query {
+  items: [Item]!
+}
