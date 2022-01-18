@@ -64,7 +64,7 @@ export interface BaseEntity {
     secGroups?: Nullable<Nullable<string>[]>;
 }
 
-export interface BaseItem {
+export interface AbstractItem {
     name?: Nullable<string>;
     id: string;
     realityId: number;
@@ -112,7 +112,7 @@ export class Cat {
     type?: Nullable<CatTypeEnum>;
 }
 
-export class OfficeEquipment implements Item {
+export class OfficeEquipment implements AbstractItem {
     isFragile?: Nullable<boolean>;
     name?: Nullable<string>;
     id: string;
@@ -128,7 +128,7 @@ export class OfficeEquipment implements Item {
     secGroups?: Nullable<Nullable<string>[]>;
 }
 
-export class OfficeForniture implements Item {
+export class OfficeForniture implements AbstractItem {
     isWood?: Nullable<boolean>;
     name?: Nullable<string>;
     id: string;
@@ -144,7 +144,7 @@ export class OfficeForniture implements Item {
     secGroups?: Nullable<Nullable<string>[]>;
 }
 
-export class Software implements Item {
+export class Software implements AbstractItem {
     isOpenSource?: Nullable<boolean>;
     name?: Nullable<string>;
     id: string;

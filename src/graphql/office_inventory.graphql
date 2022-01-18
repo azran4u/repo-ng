@@ -24,7 +24,7 @@ interface BaseEntity {
   secGroups: [String]
 }
 
-interface BaseItem implements BaseEntity {
+interface AbstractItem implements BaseEntity {
   name: String
 
   # Base Entity
@@ -41,7 +41,7 @@ interface BaseItem implements BaseEntity {
   secGroups: [String]
 }
 
-type OfficeEquipment implements Item {
+type OfficeEquipment implements AbstractItem {
   isFragile: Boolean
 
   # Item
@@ -61,7 +61,7 @@ type OfficeEquipment implements Item {
   secGroups: [String]
 }
 
-type OfficeForniture implements Item {
+type OfficeForniture implements AbstractItem {
   isWood: Boolean
 
   # Item
@@ -81,7 +81,7 @@ type OfficeForniture implements Item {
   secGroups: [String]
 }
 
-type Software implements Item {
+type Software implements AbstractItem {
   isOpenSource: Boolean
 
   # Item
