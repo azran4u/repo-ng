@@ -1,7 +1,7 @@
 import { Min } from "class-validator";
-import { CatTypeEnum, CreateCatInput } from "../../../graphql.schema";
+import { CatTypeEnum, CreateCatInput } from "../../../generated/graphql";
 
-export class CreateCatDto extends CreateCatInput {
+export class CreateCatDto implements CreateCatInput {
   @Min(1)
   age: number;
   ownerId?: number;

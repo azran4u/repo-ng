@@ -1,7 +1,7 @@
 import { Context, Parent, ResolveField, Resolver } from "@nestjs/graphql";
-import { Cat, Owner } from "../../graphql.schema";
 import * as _ from "lodash";
 import DataLoader from "dataloader";
+import { Cat, Owner } from "../../generated/graphql";
 @Resolver("Cat")
 export class CatOwnerResolver {
   constructor() {} // private readonly ownersService: OwnersService

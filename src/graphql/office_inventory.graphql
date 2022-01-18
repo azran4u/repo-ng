@@ -1,7 +1,7 @@
 scalar ZonedDateTime
 scalar BigInt
 
-enum Classification {
+enum ClassificationEnum {
   UNCLAS
   SENSI
   CONFID
@@ -13,7 +13,7 @@ enum Classification {
 interface BaseEntity {
   id: String!
   realityId: Int!
-  classification: Classification
+  classification: ClassificationEnum
   createdBy: String!
   creationTime: ZonedDateTime!
   dataVersion: BigInt!
@@ -30,7 +30,7 @@ interface AbstractItem implements BaseEntity {
   # Base Entity
   id: String!
   realityId: Int!
-  classification: Classification
+  classification: ClassificationEnum
   createdBy: String!
   creationTime: ZonedDateTime!
   dataVersion: BigInt!
@@ -50,7 +50,7 @@ type OfficeEquipment implements AbstractItem {
   # Base Entity
   id: String!
   realityId: Int!
-  classification: Classification
+  classification: ClassificationEnum
   createdBy: String!
   creationTime: ZonedDateTime!
   dataVersion: BigInt!
@@ -70,7 +70,7 @@ type OfficeForniture implements AbstractItem {
   # Base Entity
   id: String!
   realityId: Int!
-  classification: Classification
+  classification: ClassificationEnum
   createdBy: String!
   creationTime: ZonedDateTime!
   dataVersion: BigInt!
@@ -90,7 +90,7 @@ type Software implements AbstractItem {
   # Base Entity
   id: String!
   realityId: Int!
-  classification: Classification
+  classification: ClassificationEnum
   createdBy: String!
   creationTime: ZonedDateTime!
   dataVersion: BigInt!
@@ -110,7 +110,7 @@ type Container implements BaseEntity {
   # Base Entity
   id: String!
   realityId: Int!
-  classification: Classification
+  classification: ClassificationEnum
   createdBy: String!
   creationTime: ZonedDateTime!
   dataVersion: BigInt!
@@ -133,7 +133,7 @@ type StorageLocation implements BaseEntity {
   # Base Entity
   id: String!
   realityId: Int!
-  classification: Classification
+  classification: ClassificationEnum
   createdBy: String!
   creationTime: ZonedDateTime!
   dataVersion: BigInt!
@@ -152,7 +152,7 @@ input AddOfficeEquipment {
 
   # Base Entity without id
   realityId: Int!
-  classification: Classification
+  classification: ClassificationEnum
   createdBy: String!
   creationTime: ZonedDateTime!
   dataVersion: BigInt!

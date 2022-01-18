@@ -1,9 +1,11 @@
 import { Inject, Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { Knex } from "knex";
 import { WINSTON_MODULE_PROVIDER } from "nest-winston";
 import { InjectKnex } from "nestjs-knex";
 import { Logger } from "winston";
-import { Cat } from "../../graphql.schema";
+import { Configuration } from "../../config/config.factory";
+import { Cat } from "../../generated/graphql";
 import { knexLogger } from "../../utils/knexLogger";
 import { CreateCatDto } from "./dto/create-cat.dto";
 
@@ -11,15 +13,23 @@ import { CreateCatDto } from "./dto/create-cat.dto";
 export class CatsService {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
-    @InjectKnex() private readonly knex: Knex
+    @InjectKnex() private readonly knex: Knex,
+    private configService: ConfigService
   ) {
-    knexLogger(this.knex, this.logger);
+    const kenxLogging =
+      this.configService.get<Configuration>("config").kenx.logging;
+    knexLogger(
+      this.knex,
+      this.logger,
+      kenxLogging.everySql,
+      kenxLogging.bindings
+    );
   }
 
-  async create(cat: CreateCatDto[]): Promise<Cat[]> {
+  async create(cats: CreateCatDto[]): Promise<Cat[]> {
     //@ts-ignore
     return this.knex<CreateCatDto[]>("cats")
-      .insert(cat)
+      .insert(cats)
       .onConflict("id")
       .merge()
       .returning("*");

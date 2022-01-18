@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { Knex } from "knex";
-import { Owner } from "../../graphql.schema";
 import * as _ from "lodash";
 import { InjectKnex } from "nestjs-knex";
+import { Owner } from "../../generated/graphql";
 @Injectable()
 export class OwnersService {
   constructor(@InjectKnex() private readonly knex: Knex) {}

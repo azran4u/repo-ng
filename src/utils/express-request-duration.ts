@@ -3,7 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { Request, Response, NextFunction } from "express";
 import { WINSTON_MODULE_PROVIDER } from "nest-winston";
 import { Logger } from "winston";
-import { LoggerConfig } from "../config/config.factory";
+import { Configuration, LoggerConfig } from "../config/config.factory";
 import { getDurationInMilliseconds } from "./getDurationInMilliseconds";
 import * as _ from "lodash";
 @Injectable()
@@ -15,7 +15,7 @@ export class RequestDurationMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     const start = process.hrtime();
     const logger = this.logger;
-    const loggerConfig = this.configService.get<LoggerConfig>("logger");
+    const loggerConfig = this.configService.get<Configuration>("config").logger;
 
     function logDuration(): void {
       const durationInMilliseconds = getDurationInMilliseconds(start);
