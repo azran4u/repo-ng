@@ -12,6 +12,7 @@ import { OwnersModule } from "./entities/owners/owners.module";
 import { OwnersService } from "./entities/owners/owners.service";
 import { createOwnersLoader } from "./entities/owners/owners.loader";
 import { CommonModule } from "./common/common.module";
+import { DalModule } from './dal/dal.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { CommonModule } from "./common/common.module";
     }),
     CommonModule,
     CatsModule,
+    DalModule,
   ],
 })
 export class AppModule {

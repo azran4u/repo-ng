@@ -5,9 +5,10 @@ generates:
   src/generated/graphql.ts:
     plugins:
       - typescript
+      - typescript-resolvers
     config:
         declarationKind: 'interface'
-      # - "typescript-resolvers"
-  # ./graphql.schema.json:
-    # plugins:
-      # - "introspection"
+        maybeValue: T
+        scalars:
+          ZonedDateTime: Date
+          BigInt: number

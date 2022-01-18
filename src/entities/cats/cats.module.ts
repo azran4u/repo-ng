@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { KnexModule } from "nestjs-knex";
+import { DalModule } from "../../dal/dal.module";
 import { getKnexConfig } from "../../utils/getKnexConfig";
 import { OwnersModule } from "../owners/owners.module";
 import { CatOwnerResolver } from "./cat-owner.resolver";
@@ -9,11 +10,12 @@ import { CatsService } from "./cats.service";
 @Module({
   imports: [
     OwnersModule,
-    KnexModule.forRootAsync({
-      useFactory: () => {
-        return { config: getKnexConfig() };
-      },
-    }),
+    DalModule,
+    // KnexModule.forRootAsync({
+    //   useFactory: () => {
+    //     return { config: getKnexConfig() };
+    //   },
+    // }),
   ],
   providers: [CatsService, CatsResolver, CatOwnerResolver],
 })
