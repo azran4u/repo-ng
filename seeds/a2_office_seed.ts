@@ -9,7 +9,7 @@ export async function seed(knex: Knex): Promise<void> {
   await knex("containers").del();
   await knex("storage_locations").del();
   await knex("office_forniture").del();
-  await knex("office_qeuipment").del();
+  await knex("office_equipment").del();
   await knex("software").del();
   await knex("items").del();
 
@@ -49,7 +49,7 @@ export async function seed(knex: Knex): Promise<void> {
     },
   ]);
 
-  await knex("office_qeuipment").insert([
+  await knex("office_equipment").insert([
     {
       item_id: uuid1,
       is_fragile: false,

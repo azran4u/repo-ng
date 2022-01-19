@@ -4,7 +4,7 @@ import DataLoader from "dataloader";
 import { Cat, Owner } from "../../generated/graphql";
 @Resolver("Cat")
 export class CatOwnerResolver {
-  constructor() {} // private readonly ownersService: OwnersService
+  constructor() {}
 
   @ResolveField()
   async owner(

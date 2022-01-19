@@ -21,7 +21,6 @@ export interface AbstractItem {
   classification?: Maybe<ClassificationEnum>;
   createdBy: Scalars['String'];
   creationTime: Scalars['ZonedDateTime'];
-  dataVersion: Scalars['BigInt'];
   id: Scalars['String'];
   isClassified?: Maybe<Scalars['Boolean']>;
   isDeleted?: Maybe<Scalars['Boolean']>;
@@ -36,7 +35,6 @@ export interface AddOfficeEquipment {
   classification?: InputMaybe<ClassificationEnum>;
   createdBy: Scalars['String'];
   creationTime: Scalars['ZonedDateTime'];
-  dataVersion: Scalars['BigInt'];
   isClassified?: InputMaybe<Scalars['Boolean']>;
   isDeleted?: InputMaybe<Scalars['Boolean']>;
   isFragile?: InputMaybe<Scalars['Boolean']>;
@@ -51,7 +49,6 @@ export interface BaseEntity {
   classification?: Maybe<ClassificationEnum>;
   createdBy: Scalars['String'];
   creationTime: Scalars['ZonedDateTime'];
-  dataVersion: Scalars['BigInt'];
   id: Scalars['String'];
   isClassified?: Maybe<Scalars['Boolean']>;
   isDeleted?: Maybe<Scalars['Boolean']>;
@@ -90,7 +87,6 @@ export interface Container extends BaseEntity {
   classification?: Maybe<ClassificationEnum>;
   createdBy: Scalars['String'];
   creationTime: Scalars['ZonedDateTime'];
-  dataVersion: Scalars['BigInt'];
   id: Scalars['String'];
   isClassified?: Maybe<Scalars['Boolean']>;
   isDeleted?: Maybe<Scalars['Boolean']>;
@@ -113,7 +109,7 @@ export type Item = OfficeEquipment | OfficeForniture | Software;
 
 export interface Mutation {
   __typename?: 'Mutation';
-  addOfficeEquipment?: Maybe<Array<Maybe<OfficeEquipment>>>;
+  addOfficeEquipment: Array<Maybe<OfficeEquipment>>;
   createCat?: Maybe<Array<Maybe<Cat>>>;
 }
 
@@ -132,7 +128,6 @@ export interface OfficeEquipment extends AbstractItem {
   classification?: Maybe<ClassificationEnum>;
   createdBy: Scalars['String'];
   creationTime: Scalars['ZonedDateTime'];
-  dataVersion: Scalars['BigInt'];
   id: Scalars['String'];
   isClassified?: Maybe<Scalars['Boolean']>;
   isDeleted?: Maybe<Scalars['Boolean']>;
@@ -149,7 +144,6 @@ export interface OfficeForniture extends AbstractItem {
   classification?: Maybe<ClassificationEnum>;
   createdBy: Scalars['String'];
   creationTime: Scalars['ZonedDateTime'];
-  dataVersion: Scalars['BigInt'];
   id: Scalars['String'];
   isClassified?: Maybe<Scalars['Boolean']>;
   isDeleted?: Maybe<Scalars['Boolean']>;
@@ -186,7 +180,6 @@ export interface Software extends AbstractItem {
   classification?: Maybe<ClassificationEnum>;
   createdBy: Scalars['String'];
   creationTime: Scalars['ZonedDateTime'];
-  dataVersion: Scalars['BigInt'];
   id: Scalars['String'];
   isClassified?: Maybe<Scalars['Boolean']>;
   isDeleted?: Maybe<Scalars['Boolean']>;
@@ -203,7 +196,6 @@ export interface StorageLocation extends BaseEntity {
   classification?: Maybe<ClassificationEnum>;
   createdBy: Scalars['String'];
   creationTime: Scalars['ZonedDateTime'];
-  dataVersion: Scalars['BigInt'];
   id: Scalars['String'];
   isClassified?: Maybe<Scalars['Boolean']>;
   isDeleted?: Maybe<Scalars['Boolean']>;
@@ -350,7 +342,6 @@ export type AbstractItemResolvers<ContextType = any, ParentType extends Resolver
   classification?: Resolver<Maybe<ResolversTypes['ClassificationEnum']>, ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   creationTime?: Resolver<ResolversTypes['ZonedDateTime'], ParentType, ContextType>;
-  dataVersion?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   isClassified?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   isDeleted?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
@@ -366,7 +357,6 @@ export type BaseEntityResolvers<ContextType = any, ParentType extends ResolversP
   classification?: Resolver<Maybe<ResolversTypes['ClassificationEnum']>, ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   creationTime?: Resolver<ResolversTypes['ZonedDateTime'], ParentType, ContextType>;
-  dataVersion?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   isClassified?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   isDeleted?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
@@ -393,7 +383,6 @@ export type ContainerResolvers<ContextType = any, ParentType extends ResolversPa
   classification?: Resolver<Maybe<ResolversTypes['ClassificationEnum']>, ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   creationTime?: Resolver<ResolversTypes['ZonedDateTime'], ParentType, ContextType>;
-  dataVersion?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   isClassified?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   isDeleted?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
@@ -411,7 +400,7 @@ export type ItemResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  addOfficeEquipment?: Resolver<Maybe<Array<Maybe<ResolversTypes['OfficeEquipment']>>>, ParentType, ContextType, RequireFields<MutationAddOfficeEquipmentArgs, 'input'>>;
+  addOfficeEquipment?: Resolver<Array<Maybe<ResolversTypes['OfficeEquipment']>>, ParentType, ContextType, RequireFields<MutationAddOfficeEquipmentArgs, 'input'>>;
   createCat?: Resolver<Maybe<Array<Maybe<ResolversTypes['Cat']>>>, ParentType, ContextType, RequireFields<MutationCreateCatArgs, never>>;
 };
 
@@ -419,7 +408,6 @@ export type OfficeEquipmentResolvers<ContextType = any, ParentType extends Resol
   classification?: Resolver<Maybe<ResolversTypes['ClassificationEnum']>, ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   creationTime?: Resolver<ResolversTypes['ZonedDateTime'], ParentType, ContextType>;
-  dataVersion?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   isClassified?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   isDeleted?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
@@ -436,7 +424,6 @@ export type OfficeFornitureResolvers<ContextType = any, ParentType extends Resol
   classification?: Resolver<Maybe<ResolversTypes['ClassificationEnum']>, ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   creationTime?: Resolver<ResolversTypes['ZonedDateTime'], ParentType, ContextType>;
-  dataVersion?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   isClassified?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   isDeleted?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
@@ -467,7 +454,6 @@ export type SoftwareResolvers<ContextType = any, ParentType extends ResolversPar
   classification?: Resolver<Maybe<ResolversTypes['ClassificationEnum']>, ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   creationTime?: Resolver<ResolversTypes['ZonedDateTime'], ParentType, ContextType>;
-  dataVersion?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   isClassified?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   isDeleted?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
@@ -484,7 +470,6 @@ export type StorageLocationResolvers<ContextType = any, ParentType extends Resol
   classification?: Resolver<Maybe<ResolversTypes['ClassificationEnum']>, ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   creationTime?: Resolver<ResolversTypes['ZonedDateTime'], ParentType, ContextType>;
-  dataVersion?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   isClassified?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   isDeleted?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;

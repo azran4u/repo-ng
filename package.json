@@ -12,7 +12,12 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "generate-typings": "ts-node generate-typings",
-    "codegen": "graphql-codegen --config codegen.yml"
+    "codegen": "graphql-codegen --config codegen.yml",
+    "joi_codegen": "rm -rf /src/dal/interfaces/* && ts-node ./src/dal/joi.to.typescript.ts",
+    "knex:rollback": "knex migrate:rollback",
+    "knex:latest": "knex migrate:latest",
+    "knex:seed": "knex seed:run",
+    "knex:restart": "npm run knex:rollback && npm run knex:latest && npm run knex:seed"
   },
   "devDependencies": {
     "@golevelup/nestjs-testing": "^0.1.2",
@@ -59,6 +64,8 @@
     "dataloader": "^2.0.0",
     "graphql": "15.7.2",
     "graphql-subscriptions": "2.0.0",
+    "joi": "^17.5.0",
+    "joi-to-typescript": "^2.4.0",
     "knex": "^0.95.15",
     "lodash": "^4.17.21",
     "nest-winston": "^1.6.0",

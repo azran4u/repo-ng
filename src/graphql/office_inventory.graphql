@@ -16,7 +16,6 @@ interface BaseEntity {
   classification: ClassificationEnum
   createdBy: String!
   creationTime: ZonedDateTime!
-  dataVersion: BigInt!
   lastUpdateTime: ZonedDateTime
   lastUpdateBy: String
   isDeleted: Boolean
@@ -33,7 +32,6 @@ interface AbstractItem implements BaseEntity {
   classification: ClassificationEnum
   createdBy: String!
   creationTime: ZonedDateTime!
-  dataVersion: BigInt!
   lastUpdateTime: ZonedDateTime
   lastUpdateBy: String
   isDeleted: Boolean
@@ -53,7 +51,6 @@ type OfficeEquipment implements AbstractItem {
   classification: ClassificationEnum
   createdBy: String!
   creationTime: ZonedDateTime!
-  dataVersion: BigInt!
   lastUpdateTime: ZonedDateTime
   lastUpdateBy: String
   isDeleted: Boolean
@@ -73,7 +70,6 @@ type OfficeForniture implements AbstractItem {
   classification: ClassificationEnum
   createdBy: String!
   creationTime: ZonedDateTime!
-  dataVersion: BigInt!
   lastUpdateTime: ZonedDateTime
   lastUpdateBy: String
   isDeleted: Boolean
@@ -93,7 +89,6 @@ type Software implements AbstractItem {
   classification: ClassificationEnum
   createdBy: String!
   creationTime: ZonedDateTime!
-  dataVersion: BigInt!
   lastUpdateTime: ZonedDateTime
   lastUpdateBy: String
   isDeleted: Boolean
@@ -113,7 +108,6 @@ type Container implements BaseEntity {
   classification: ClassificationEnum
   createdBy: String!
   creationTime: ZonedDateTime!
-  dataVersion: BigInt!
   lastUpdateTime: ZonedDateTime
   lastUpdateBy: String
   isDeleted: Boolean
@@ -136,7 +130,6 @@ type StorageLocation implements BaseEntity {
   classification: ClassificationEnum
   createdBy: String!
   creationTime: ZonedDateTime!
-  dataVersion: BigInt!
   lastUpdateTime: ZonedDateTime
   lastUpdateBy: String
   isDeleted: Boolean
@@ -155,7 +148,6 @@ input AddOfficeEquipment {
   classification: ClassificationEnum
   createdBy: String!
   creationTime: ZonedDateTime!
-  dataVersion: BigInt!
   lastUpdateTime: ZonedDateTime
   lastUpdateBy: String
   isDeleted: Boolean
@@ -164,7 +156,7 @@ input AddOfficeEquipment {
 }
 
 type Mutation {
-  addOfficeEquipment(input: [AddOfficeEquipment]!): [OfficeEquipment]
+  addOfficeEquipment(input: [AddOfficeEquipment]!): [OfficeEquipment]!
 }
 
 type Query {

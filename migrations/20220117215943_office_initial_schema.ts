@@ -28,7 +28,7 @@ export async function up(knex: Knex): Promise<void> {
       table.string("name").notNullable();
       table.index("name", undefined, "btree");
     })
-    .createTable("office_qeuipment", (table) => {
+    .createTable("office_equipment", (table) => {
       table.uuid("item_id").primary().references("items.id").notNullable();
       table.boolean("is_fragile");
       table.index("is_fragile", undefined, "btree");
@@ -72,7 +72,7 @@ export async function down(knex: Knex): Promise<void> {
     .dropTableIfExists("containers")
     .dropTableIfExists("storage_locations")
     .dropTableIfExists("storage_locations_enum")
-    .dropTableIfExists("office_qeuipment")
+    .dropTableIfExists("office_equipment")
     .dropTableIfExists("software")
     .dropTableIfExists("office_forniture")
     .dropTableIfExists("items")

@@ -12,6 +12,7 @@ import { createOwnersLoader } from "./entities/owners/owners.loader";
 import { CommonModule } from "./common/common.module";
 import { DalModule } from "./dal/dal.module";
 import { AppConfigModule, AppConfigService } from "./config";
+import { ItemsModule } from "./entities/items/items.module";
 
 @Module({
   imports: [
@@ -34,8 +35,9 @@ import { AppConfigModule, AppConfigService } from "./config";
         }),
       }),
       inject: [OwnersService],
-    }),    
-    CatsModule,    
+    }),
+    CatsModule,
+    ItemsModule,
   ],
 })
 export class AppModule {
