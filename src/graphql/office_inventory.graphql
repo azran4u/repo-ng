@@ -155,10 +155,20 @@ input AddOfficeEquipment {
   secGroups: [String]
 }
 
+enum ItemTypes {
+  SOFTWARE
+  OFFICE_EQUIPMENT
+  OFFICE_FURNITURE
+}
+
+input ItemsFilter {
+  byTypes: [ItemTypes]
+}
+
 type Mutation {
   addOfficeEquipment(input: [AddOfficeEquipment]!): [OfficeEquipment]!
 }
 
 type Query {
-  items: [Item]!
+  items(filter: ItemsFilter): [Item]!
 }

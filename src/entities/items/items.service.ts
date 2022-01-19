@@ -6,7 +6,7 @@ import {
   OfficeFornitureItemDto,
   SoftwareItemDto,
 } from "../../dal/dal.types";
-import { Item } from "../../generated/graphql";
+import { Item, ItemTypes } from "../../generated/graphql";
 import { officeEquipmentItemDtoToOfficeEquipmentItemConverter } from "./office.equipment.item.dto.converter";
 import { officeFornitureItemDtoToOfficeFornitureConverter } from "./office.forniture.item.dto.converter";
 import { softwareItemDtoToSoftwareItemConverter } from "./software.item.dto.converter";
@@ -18,35 +18,44 @@ export class ItemsService {
     this.knex = this.dalService.knex;
   }
 
-  async findAll(): Promise<Item[]> {
+  async findAll(types?: ItemTypes[]): Promise<Item[]> {
     const res: Item[] = [];
 
-    const softwareItemsDtos: SoftwareItemDto[] = await this.knex
-      .from("software")
-      .innerJoin("items", "software.item_id", "items.id");
+    if (!types || types?.includes(ItemTypes.Software)) {
+      const softwareItemsDtos: SoftwareItemDto[] = await this.knex
+        .from("software")
+        .innerJoin("items", "software.item_id", "items.id");
 
-    const officeFornitureItemDtos: OfficeFornitureItemDto[] = await this.knex
-      .from("office_forniture")
-      .innerJoin("items", "office_forniture.item_id", "items.id");
+      const softwareItems = softwareItemsDtos.map((dto) =>
+        softwareItemDtoToSoftwareItemConverter(dto)
+      );
 
-    const officeEquipmentItemDtos: OfficeEquipmentItemDto[] = await this.knex
-      .from("office_equipment")
-      .innerJoin("items", "office_equipment.item_id", "items.id");
+      if (softwareItems.length > 0) res.push(...softwareItems);
+    }
 
-    const softwareItems = softwareItemsDtos.map((dto) =>
-      softwareItemDtoToSoftwareItemConverter(dto)
-    );
+    if (!types || types?.includes(ItemTypes.OfficeFurniture)) {
+      const officeFornitureItemDtos: OfficeFornitureItemDto[] = await this.knex
+        .from("office_forniture")
+        .innerJoin("items", "office_forniture.item_id", "items.id");
 
-    const officeFornitureItems = officeFornitureItemDtos.map((dto) =>
-      officeFornitureItemDtoToOfficeFornitureConverter(dto)
-    );
-    const officeEquipmentItems = officeEquipmentItemDtos.map((dto) =>
-      officeEquipmentItemDtoToOfficeEquipmentItemConverter(dto)
-    );
+      const officeFornitureItems = officeFornitureItemDtos.map((dto) =>
+        officeFornitureItemDtoToOfficeFornitureConverter(dto)
+      );
 
-    if (softwareItems.length > 0) res.push(...softwareItems);
-    if (officeFornitureItems.length > 0) res.push(...officeFornitureItems);
-    if (officeEquipmentItems.length > 0) res.push(...officeEquipmentItems);
+      if (officeFornitureItems.length > 0) res.push(...officeFornitureItems);
+    }
+
+    if (!types || types?.includes(ItemTypes.OfficeEquipment)) {
+      const officeEquipmentItemDtos: OfficeEquipmentItemDto[] = await this.knex
+        .from("office_equipment")
+        .innerJoin("items", "office_equipment.item_id", "items.id");
+
+      const officeEquipmentItems = officeEquipmentItemDtos.map((dto) =>
+        officeEquipmentItemDtoToOfficeEquipmentItemConverter(dto)
+      );
+
+      if (officeEquipmentItems.length > 0) res.push(...officeEquipmentItems);
+    }
 
     return res;
   }

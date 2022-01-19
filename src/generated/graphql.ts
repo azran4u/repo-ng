@@ -107,6 +107,16 @@ export interface CreateCatInput {
 
 export type Item = OfficeEquipment | OfficeForniture | Software;
 
+export enum ItemTypes {
+  OfficeEquipment = 'OFFICE_EQUIPMENT',
+  OfficeFurniture = 'OFFICE_FURNITURE',
+  Software = 'SOFTWARE'
+}
+
+export interface ItemsFilter {
+  byTypes?: InputMaybe<Array<InputMaybe<ItemTypes>>>;
+}
+
 export interface Mutation {
   __typename?: 'Mutation';
   addOfficeEquipment: Array<Maybe<OfficeEquipment>>;
@@ -173,6 +183,11 @@ export interface Query {
 
 export interface QueryCatArgs {
   id: Scalars['ID'];
+}
+
+
+export interface QueryItemsArgs {
+  filter?: InputMaybe<ItemsFilter>;
 }
 
 export interface Software extends AbstractItem {
@@ -299,6 +314,8 @@ export type ResolversTypes = {
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Item: ResolversTypes['OfficeEquipment'] | ResolversTypes['OfficeForniture'] | ResolversTypes['Software'];
+  ItemTypes: ItemTypes;
+  ItemsFilter: ItemsFilter;
   Mutation: ResolverTypeWrapper<{}>;
   OfficeEquipment: ResolverTypeWrapper<OfficeEquipment>;
   OfficeForniture: ResolverTypeWrapper<OfficeForniture>;
@@ -325,6 +342,7 @@ export type ResolversParentTypes = {
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   Item: ResolversParentTypes['OfficeEquipment'] | ResolversParentTypes['OfficeForniture'] | ResolversParentTypes['Software'];
+  ItemsFilter: ItemsFilter;
   Mutation: {};
   OfficeEquipment: OfficeEquipment;
   OfficeForniture: OfficeForniture;
@@ -447,7 +465,7 @@ export type OwnerResolvers<ContextType = any, ParentType extends ResolversParent
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   cat?: Resolver<Maybe<ResolversTypes['Cat']>, ParentType, ContextType, RequireFields<QueryCatArgs, 'id'>>;
   cats?: Resolver<Maybe<Array<Maybe<ResolversTypes['Cat']>>>, ParentType, ContextType>;
-  items?: Resolver<Array<Maybe<ResolversTypes['Item']>>, ParentType, ContextType>;
+  items?: Resolver<Array<Maybe<ResolversTypes['Item']>>, ParentType, ContextType, RequireFields<QueryItemsArgs, never>>;
 };
 
 export type SoftwareResolvers<ContextType = any, ParentType extends ResolversParentTypes['Software'] = ResolversParentTypes['Software']> = {

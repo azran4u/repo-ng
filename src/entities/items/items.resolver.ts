@@ -1,5 +1,5 @@
-import { Query, ResolveField, Resolver } from "@nestjs/graphql";
-import { Item } from "../../generated/graphql";
+import { Args, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Item, ItemsFilter } from "../../generated/graphql";
 import { ItemsService } from "./items.service";
 
 @Resolver("Item")
@@ -12,8 +12,8 @@ export class ItemsResolver {
   }
 
   @Query("items")
-  async getItems() {
-    const res = await this.itemsService.findAll();
+  async getItems(@Args("filter") args?: ItemsFilter) {
+    const res = await this.itemsService.findAll(args?.byTypes);
     if (!res) return [];
     return res;
   }
