@@ -30,3 +30,7 @@ export interface OfficeFornitureItemDto extends ItemDto, ItemDtoRef {
 export interface OfficeEquipmentItemDto extends ItemDto, ItemDtoRef {
   is_fragile?: boolean;
 }
+
+export interface ContainerDto extends BaseEntityDto {
+  storage_locations_id: string;
+}

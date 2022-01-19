@@ -25,6 +25,7 @@ interface BaseEntity {
 
 interface AbstractItem implements BaseEntity {
   name: String
+  container: Container
 
   # Base Entity
   id: String!
@@ -44,6 +45,7 @@ type OfficeEquipment implements AbstractItem {
 
   # Item
   name: String
+  container: Container
 
   # Base Entity
   id: String!
@@ -63,6 +65,7 @@ type OfficeForniture implements AbstractItem {
 
   # Item
   name: String
+  container: Container
 
   # Base Entity
   id: String!
@@ -82,6 +85,7 @@ type Software implements AbstractItem {
 
   # Item
   name: String
+  container: Container
 
   # Base Entity
   id: String!

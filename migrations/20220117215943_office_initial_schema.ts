@@ -60,9 +60,8 @@ export async function up(knex: Knex): Promise<void> {
       table.index("storage_locations_id", undefined, "btree");
     })
     .createTable("container_items", (table) => {
-      table.uuid("item_id").references("items.id").notNullable();
+      table.uuid("item_id").references("items.id").notNullable().primary();
       table.uuid("container_id").references("containers.id").notNullable();
-      table.primary(["item_id", "container_id"]);
     });
 }
 

@@ -13,6 +13,9 @@ import { CommonModule } from "./common/common.module";
 import { DalModule } from "./dal/dal.module";
 import { AppConfigModule, AppConfigService } from "./config";
 import { ItemsModule } from "./entities/items/items.module";
+import { ContainerService } from "./entities/container/containers.service";
+import { ContainersModule } from "./entities/container/containers.module";
+import { createContainersLoader } from "./entities/container/containers.loader";
 
 @Module({
   imports: [
@@ -26,18 +29,23 @@ import { ItemsModule } from "./entities/items/items.module";
     CommonModule,
     DalModule,
     GraphQLModule.forRootAsync({
-      imports: [OwnersModule],
-      useFactory: (ownersService: OwnersService) => ({
+      imports: [OwnersModule, ContainersModule],
+      useFactory: (
+        ownersService: OwnersService,
+        containerService: ContainerService
+      ) => ({
         typePaths: ["./**/*.graphql"],
         context: () => ({
           randomValue: Math.random(),
           ownersLoader: createOwnersLoader(ownersService),
+          containersLoader: createContainersLoader(containerService),
         }),
       }),
-      inject: [OwnersService],
+      inject: [OwnersService, ContainerService],
     }),
     CatsModule,
     ItemsModule,
+    ContainersModule,
   ],
 })
 export class AppModule {

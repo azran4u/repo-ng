@@ -19,6 +19,7 @@ export interface Scalars {
 
 export interface AbstractItem {
   classification?: Maybe<ClassificationEnum>;
+  container?: Maybe<Container>;
   createdBy: Scalars['String'];
   creationTime: Scalars['ZonedDateTime'];
   id: Scalars['String'];
@@ -136,6 +137,7 @@ export interface MutationCreateCatArgs {
 export interface OfficeEquipment extends AbstractItem {
   __typename?: 'OfficeEquipment';
   classification?: Maybe<ClassificationEnum>;
+  container?: Maybe<Container>;
   createdBy: Scalars['String'];
   creationTime: Scalars['ZonedDateTime'];
   id: Scalars['String'];
@@ -152,6 +154,7 @@ export interface OfficeEquipment extends AbstractItem {
 export interface OfficeForniture extends AbstractItem {
   __typename?: 'OfficeForniture';
   classification?: Maybe<ClassificationEnum>;
+  container?: Maybe<Container>;
   createdBy: Scalars['String'];
   creationTime: Scalars['ZonedDateTime'];
   id: Scalars['String'];
@@ -193,6 +196,7 @@ export interface QueryItemsArgs {
 export interface Software extends AbstractItem {
   __typename?: 'Software';
   classification?: Maybe<ClassificationEnum>;
+  container?: Maybe<Container>;
   createdBy: Scalars['String'];
   creationTime: Scalars['ZonedDateTime'];
   id: Scalars['String'];
@@ -358,6 +362,7 @@ export type ResolversParentTypes = {
 export type AbstractItemResolvers<ContextType = any, ParentType extends ResolversParentTypes['AbstractItem'] = ResolversParentTypes['AbstractItem']> = {
   __resolveType: TypeResolveFn<'OfficeEquipment' | 'OfficeForniture' | 'Software', ParentType, ContextType>;
   classification?: Resolver<Maybe<ResolversTypes['ClassificationEnum']>, ParentType, ContextType>;
+  container?: Resolver<Maybe<ResolversTypes['Container']>, ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   creationTime?: Resolver<ResolversTypes['ZonedDateTime'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -424,6 +429,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type OfficeEquipmentResolvers<ContextType = any, ParentType extends ResolversParentTypes['OfficeEquipment'] = ResolversParentTypes['OfficeEquipment']> = {
   classification?: Resolver<Maybe<ResolversTypes['ClassificationEnum']>, ParentType, ContextType>;
+  container?: Resolver<Maybe<ResolversTypes['Container']>, ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   creationTime?: Resolver<ResolversTypes['ZonedDateTime'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -440,6 +446,7 @@ export type OfficeEquipmentResolvers<ContextType = any, ParentType extends Resol
 
 export type OfficeFornitureResolvers<ContextType = any, ParentType extends ResolversParentTypes['OfficeForniture'] = ResolversParentTypes['OfficeForniture']> = {
   classification?: Resolver<Maybe<ResolversTypes['ClassificationEnum']>, ParentType, ContextType>;
+  container?: Resolver<Maybe<ResolversTypes['Container']>, ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   creationTime?: Resolver<ResolversTypes['ZonedDateTime'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -470,6 +477,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type SoftwareResolvers<ContextType = any, ParentType extends ResolversParentTypes['Software'] = ResolversParentTypes['Software']> = {
   classification?: Resolver<Maybe<ResolversTypes['ClassificationEnum']>, ParentType, ContextType>;
+  container?: Resolver<Maybe<ResolversTypes['Container']>, ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   creationTime?: Resolver<ResolversTypes['ZonedDateTime'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

@@ -1,6 +1,15 @@
-import { Args, Query, ResolveField, Resolver } from "@nestjs/graphql";
-import { Item, ItemsFilter } from "../../generated/graphql";
+import {
+  Args,
+  Context,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from "@nestjs/graphql";
+import DataLoader from "dataloader";
+import { Container, Item, ItemsFilter } from "../../generated/graphql";
 import { ItemsService } from "./items.service";
+import * as _ from "lodash";
 
 @Resolver("Item")
 export class ItemsResolver {
