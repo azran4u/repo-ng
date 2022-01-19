@@ -1,8 +1,6 @@
 import { MiddlewareConsumer, Module } from "@nestjs/common";
-import { ConfigModule, ConfigService } from "@nestjs/config";
 import { WinstonModule } from "nest-winston";
 import { loggerOptionsFactory } from "./logger/logger";
-import { configFactory, Configuration } from "./config/config.factory";
 import { GraphQLModule } from "@nestjs/graphql";
 import { GraphqlExtractOperationMiddleware } from "./utils/graphql-extract-operation-middlewatr";
 import { json } from "express";
@@ -12,24 +10,20 @@ import { OwnersModule } from "./entities/owners/owners.module";
 import { OwnersService } from "./entities/owners/owners.service";
 import { createOwnersLoader } from "./entities/owners/owners.loader";
 import { CommonModule } from "./common/common.module";
-import { DalModule } from './dal/dal.module';
+import { DalModule } from "./dal/dal.module";
+import { AppConfigModule, AppConfigService } from "./config";
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      cache: true,
-      ignoreEnvFile: true,
-      isGlobal: true,
-      load: [configFactory],
-    }),
+    AppConfigModule,
     WinstonModule.forRootAsync({
-      useFactory: (configService: ConfigService) => {
-        return loggerOptionsFactory(
-          configService.get<Configuration>("config").logger.level
-        );
+      useFactory: (configService: AppConfigService) => {
+        return loggerOptionsFactory(configService.getConfig().logger.level);
       },
-      inject: [ConfigService],
+      inject: [AppConfigService],
     }),
+    CommonModule,
+    DalModule,
     GraphQLModule.forRootAsync({
       imports: [OwnersModule],
       useFactory: (ownersService: OwnersService) => ({
@@ -40,10 +34,8 @@ import { DalModule } from './dal/dal.module';
         }),
       }),
       inject: [OwnersService],
-    }),
-    CommonModule,
-    CatsModule,
-    DalModule,
+    }),    
+    CatsModule,    
   ],
 })
 export class AppModule {

@@ -1,4 +1,29 @@
+import { ConfigFactory } from "@nestjs/config";
 import { parseInt } from "lodash";
+
+export const configFactory: ConfigFactory<{ config: Configuration }> = () => {
+  return {
+    config: {
+      server: {
+        port: envToNumberOrDefault("SERVER_PORT", 3500),
+      },
+      logger: {
+        level: envToStringOrDefault("LOGGER_LEVEL", "debug"),
+        logging: {
+          logGraphqlEntitiesRequests: true,
+          logGraphqlIntrospectionRequests: false,
+          logNonGraphqlRequests: false,
+        },
+      },
+      kenx: {
+        logging: {
+          everySql: envToBooleanWIthDefault("KNEX_LOGGING_EVERY_SQL", true),
+          bindings: envToBooleanWIthDefault("KNEX_LOGGING_BINDING", true),
+        },
+      },
+    },
+  };
+};
 
 export interface ServerConfig {
   port: number;
@@ -23,30 +48,6 @@ export interface Configuration {
   server: ServerConfig;
   logger: LoggerConfig;
   kenx: KnexConfig;
-}
-
-export function configFactory(): { config: Configuration } {
-  return {
-    config: {
-      server: {
-        port: envToNumberOrDefault("SERVER_PORT", 3500),
-      },
-      logger: {
-        level: envToStringOrDefault("LOGGER_LEVEL", "debug"),
-        logging: {
-          logGraphqlEntitiesRequests: true,
-          logGraphqlIntrospectionRequests: false,
-          logNonGraphqlRequests: false,
-        },
-      },
-      kenx: {
-        logging: {
-          everySql: envToBooleanWIthDefault("KNEX_LOGGING_EVERY_SQL", true),
-          bindings: envToBooleanWIthDefault("KNEX_LOGGING_BINDING", true),
-        },
-      },
-    },
-  };
 }
 
 function envToNumberOrDefault(env: string, defaultValue: number): number {

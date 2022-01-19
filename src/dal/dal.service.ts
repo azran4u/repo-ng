@@ -4,7 +4,7 @@ import { Knex } from "knex";
 import { WINSTON_MODULE_PROVIDER } from "nest-winston";
 import { InjectKnex } from "nestjs-knex";
 import { Logger } from "winston";
-import { Configuration } from "../config/config.factory";
+import { AppConfigService } from "../config/app.config.service";
 import { knexLogger } from "../utils/knexLogger";
 
 @Injectable()
@@ -12,10 +12,10 @@ export class DalService {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
     @InjectKnex() public readonly knex: Knex,
-    private configService: ConfigService
+    private configService: AppConfigService
   ) {
-    const kenxLogging =
-      this.configService.get<Configuration>("config").kenx.logging;
+    const config = this.configService.getConfig();
+    const kenxLogging = config.kenx.logging;
     knexLogger(
       this.knex,
       this.logger,
