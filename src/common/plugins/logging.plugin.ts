@@ -11,6 +11,7 @@ import { Logger } from "winston";
 @Plugin()
 export class LoggingPlugin implements ApolloServerPlugin {
   constructor(@Inject(WINSTON_MODULE_PROVIDER) private logger: Logger) {}
+
   async requestDidStart(
     requestContext: GraphQLRequestContext
   ): Promise<GraphQLRequestListener> {
