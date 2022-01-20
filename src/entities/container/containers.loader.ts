@@ -11,11 +11,10 @@ export function createContainersLoader(containerService: ContainerService) {
       containers,
       (container) => container?.item_id
     );
-    const res = ids.map((id) => {
+    return ids.map((id) => {
       const value = containersMap[id];
       if (!value) return null;
       return containerDtoToContainerConverter(value);
     });
-    return res;
   });
 }
