@@ -1,3 +1,5 @@
+import { StorageLocationsEnum } from "../generated/graphql";
+
 export interface BaseEntityDto {
   classification?: string;
   created_at: Date;
@@ -33,4 +35,9 @@ export interface OfficeEquipmentItemDto extends ItemDto, ItemDtoRef {
 
 export interface ContainerDto extends BaseEntityDto {
   storage_locations_id: string;
+  item_id?: string;
+}
+
+export interface StorageLocationDto extends BaseEntityDto {
+  name: StorageLocationsEnum;
 }

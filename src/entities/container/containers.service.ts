@@ -1,17 +1,14 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import * as _ from "lodash";
 import { DalService } from "../../dal/dal.service";
 import { ContainerDto } from "../../dal/dal.types";
-import { Container } from "../../generated/graphql";
 import { containerDtoToContainerConverter } from "./container.dto.converter";
 import { ContainerWithReferences } from "./container.with.references";
 @Injectable()
 export class ContainerService {
   constructor(private dalService: DalService) {}
 
-  async findByItemsIds(
-    ids: readonly string[]
-  ): Promise<ContainerWithReferences[]> {
+  async findByItemsIds(ids: readonly string[]): Promise<ContainerDto[]> {
     if (_.isEmpty(ids)) return [];
 
     // SELECT *
@@ -21,21 +18,20 @@ export class ContainerService {
 
     try {
       const containerDtos: ContainerDto[] = await this.dalService.knex
-        .from("containers")
-        .innerJoin(
-          "container_items as b",
-          "containers.id",
-          "=",
-          "b.container_id"
-        )
+        .from("containers as a")
+        .innerJoin("container_items as b", "a.id", "=", "b.container_id")
         .whereIn("b.item_id", ids);
 
-      const containerWithReferences = containerDtos.map((dto) =>
-        containerDtoToContainerConverter(dto)
-      );
-      return containerWithReferences;
+      return containerDtos;
+      // const containerWithReferences = containerDtos.map((dto) =>
+      //   containerDtoToContainerConverter(dto)
+      // );
+      // return containerWithReferences;
     } catch (error) {
-      debugger;
+      throw new InternalServerErrorException(
+        error,
+        `error in ContainerService -> findByItemsIds ${error?.message}`
+      );
     }
   }
 }

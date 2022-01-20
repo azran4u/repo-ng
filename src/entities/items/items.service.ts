@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { Knex } from "knex";
 import { DalService } from "../../dal/dal.service";
 import {
@@ -18,26 +18,42 @@ export class ItemsService {
     this.knex = this.dalService.knex;
   }
 
-  async findAll(types?: ItemTypes[]): Promise<Item[]> {
+  async findAll(filterByEntityType?: ItemTypes[]): Promise<Item[]> {
     const all: Promise<Item[]>[] = [];
 
-    if (!types || types?.includes(ItemTypes.Software)) {
+    if (
+      !filterByEntityType ||
+      filterByEntityType?.includes(ItemTypes.Software)
+    ) {
       all.push(this.getAllSoftware());
     }
 
-    if (!types || types?.includes(ItemTypes.OfficeFurniture)) {
+    if (
+      !filterByEntityType ||
+      filterByEntityType?.includes(ItemTypes.OfficeFurniture)
+    ) {
       all.push(this.getAllOfficeForniture());
     }
 
-    if (!types || types?.includes(ItemTypes.OfficeEquipment)) {
+    if (
+      !filterByEntityType ||
+      filterByEntityType?.includes(ItemTypes.OfficeEquipment)
+    ) {
       all.push(this.getAllOfficeEquipment());
     }
 
-    const arrayOfItemArrays = await Promise.all(all);
-    return arrayOfItemArrays.reduce((acc, curr) => {
-      acc.push(...curr);
-      return acc;
-    }, []);
+    try {
+      const arrayOfItemArrays = await Promise.all(all);
+      return arrayOfItemArrays.reduce((acc, curr) => {
+        acc.push(...curr);
+        return acc;
+      }, []);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        error,
+        `error in ItemsService -> findAll ${error?.message}`
+      );
+    }
   }
 
   private async getAllSoftware() {
