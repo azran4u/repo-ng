@@ -103,7 +103,7 @@ type Software implements AbstractItem {
 union Item = OfficeEquipment | OfficeForniture | Software
 
 type Container implements BaseEntity {
-  items: [Item]!
+  items: [Item]
   location: StorageLocationsEnum!
 
   # Base Entity
