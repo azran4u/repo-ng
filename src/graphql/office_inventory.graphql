@@ -104,7 +104,7 @@ union Item = OfficeEquipment | OfficeForniture | Software
 
 type Container implements BaseEntity {
   items: [Item]!
-  location: StorageLocation!
+  location: StorageLocationsEnum!
 
   # Base Entity
   id: String!
@@ -123,22 +123,6 @@ enum StorageLocationsEnum {
   NORTH
   CENTER
   SOUTH
-}
-
-type StorageLocation implements BaseEntity {
-  location: StorageLocationsEnum!
-
-  # Base Entity
-  id: String!
-  realityId: Int!
-  classification: ClassificationEnum
-  createdBy: String!
-  creationTime: ZonedDateTime!
-  lastUpdateTime: ZonedDateTime
-  lastUpdateBy: String
-  isDeleted: Boolean
-  isClassified: Boolean
-  secGroups: [String]
 }
 
 input AddOfficeEquipment {

@@ -23,8 +23,17 @@ export async function up(knex: Knex): Promise<void> {
     .createTable("storage_locations_enum", (table) => {
       table.string("type").primary();
     })
+    .createTable("containers", (table) => {
+      baseEntity(table, knex);
+      table
+        .string("location")
+        .references("storage_locations_enum.type")
+        .notNullable();
+      table.index("location", undefined, "btree");
+    })
     .createTable("items", (table) => {
       baseEntity(table, knex);
+      table.uuid("container_id").references("containers.id").notNullable();
       table.string("name").notNullable();
       table.index("name", undefined, "btree");
     })
@@ -42,34 +51,12 @@ export async function up(knex: Knex): Promise<void> {
       table.uuid("item_id").primary().references("items.id").notNullable();
       table.boolean("is_wood");
       table.index("is_wood", undefined, "btree");
-    })
-    .createTable("storage_locations", (table) => {
-      baseEntity(table, knex);
-      table
-        .string("name")
-        .references("storage_locations_enum.type")
-        .notNullable();
-      table.index("name", undefined, "btree");
-    })
-    .createTable("containers", (table) => {
-      baseEntity(table, knex);
-      table
-        .uuid("storage_locations_id")
-        .references("storage_locations.id")
-        .notNullable();
-      table.index("storage_locations_id", undefined, "btree");
-    })
-    .createTable("container_items", (table) => {
-      table.uuid("item_id").references("items.id").notNullable().primary();
-      table.uuid("container_id").references("containers.id").notNullable();
     });
 }
 
 export async function down(knex: Knex): Promise<void> {
   return knex.schema
-    .dropTableIfExists("container_items")
     .dropTableIfExists("containers")
-    .dropTableIfExists("storage_locations")
     .dropTableIfExists("storage_locations_enum")
     .dropTableIfExists("office_equipment")
     .dropTableIfExists("software")

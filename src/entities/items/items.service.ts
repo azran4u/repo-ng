@@ -7,9 +7,11 @@ import {
   SoftwareItemDto,
 } from "../../dal/dal.types";
 import { Item, ItemTypes } from "../../generated/graphql";
-import { officeEquipmentItemDtoToOfficeEquipmentItemConverter } from "./office.equipment.item.dto.converter";
-import { officeFornitureItemDtoToOfficeFornitureConverter } from "./office.forniture.item.dto.converter";
-import { softwareItemDtoToSoftwareItemConverter } from "./software.item.dto.converter";
+import {
+  softwareItemDtoToSoftwareItemConverter,
+  officeFornitureItemDtoToOfficeFornitureConverter,
+  officeEquipmentItemDtoToOfficeEquipmentItemConverter,
+} from "./items.dto.converter";
 
 @Injectable()
 export class ItemsService {
@@ -19,32 +21,32 @@ export class ItemsService {
   }
 
   async findAll(filterByEntityType?: ItemTypes[]): Promise<Item[]> {
-    const all: Promise<Item[]>[] = [];
+    const queries: Promise<Item[]>[] = [];
 
     if (
       !filterByEntityType ||
       filterByEntityType?.includes(ItemTypes.Software)
     ) {
-      all.push(this.getAllSoftware());
+      queries.push(this.getAllSoftware());
     }
 
     if (
       !filterByEntityType ||
       filterByEntityType?.includes(ItemTypes.OfficeFurniture)
     ) {
-      all.push(this.getAllOfficeForniture());
+      queries.push(this.getAllOfficeForniture());
     }
 
     if (
       !filterByEntityType ||
       filterByEntityType?.includes(ItemTypes.OfficeEquipment)
     ) {
-      all.push(this.getAllOfficeEquipment());
+      queries.push(this.getAllOfficeEquipment());
     }
 
     try {
-      const arrayOfItemArrays = await Promise.all(all);
-      return arrayOfItemArrays.reduce((acc, curr) => {
+      const res = await Promise.all(queries);
+      return res.reduce((acc, curr) => {
         acc.push(...curr);
         return acc;
       }, []);
@@ -64,7 +66,7 @@ export class ItemsService {
     const softwareItems = softwareItemsDtos.map((dto) =>
       softwareItemDtoToSoftwareItemConverter(dto)
     );
-    return softwareItems.length > 0 ? softwareItems : [];
+    return softwareItems?.length > 0 ? softwareItems : [];
   }
 
   private async getAllOfficeForniture() {
@@ -75,7 +77,7 @@ export class ItemsService {
     const officeFornitureItems = officeFornitureItemDtos.map((dto) =>
       officeFornitureItemDtoToOfficeFornitureConverter(dto)
     );
-    return officeFornitureItems.length > 0 ? officeFornitureItems : [];
+    return officeFornitureItems?.length > 0 ? officeFornitureItems : [];
   }
 
   private async getAllOfficeEquipment() {
@@ -87,6 +89,6 @@ export class ItemsService {
       officeEquipmentItemDtoToOfficeEquipmentItemConverter(dto)
     );
 
-    return officeEquipmentItems.length > 0 ? officeEquipmentItems : [];
+    return officeEquipmentItems?.length > 0 ? officeEquipmentItems : [];
   }
 }

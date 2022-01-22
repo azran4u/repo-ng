@@ -1,4 +1,4 @@
-import { Args, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Args, Info, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { Item, ItemsFilter } from "../../generated/graphql";
 import { ItemsService } from "./items.service";
 import * as _ from "lodash";
@@ -14,8 +14,6 @@ export class ItemsResolver {
 
   @Query("items")
   async getItems(@Args("filter") args?: ItemsFilter) {
-    const res = await this.itemsService.findAll(args?.byTypes);
-    if (!res) return [];
-    return res;
+    return this.itemsService.findAll(args?.byTypes);
   }
 }

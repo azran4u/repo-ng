@@ -8,19 +8,16 @@ import {
   OfficeEquipmentItemDto,
   OfficeFornitureItemDto,
   SoftwareItemDto,
-  StorageLocationDto,
 } from "../src/dal/dal.types";
 import { randomIntFromInterval } from "../src/utils/randomIntFromInterval";
 import { StorageLocationsEnum } from "../src/generated/graphql";
 
 export async function seed(knex: Knex): Promise<void> {
-  await knex("container_items").del();
-  await knex("containers").del();
-  await knex("storage_locations").del();
   await knex("office_forniture").del();
   await knex("office_equipment").del();
   await knex("software").del();
   await knex("items").del();
+  await knex("containers").del();
 
   const createBaseEntity = (): Omit<
     BaseEntityDto,
@@ -37,111 +34,62 @@ export async function seed(knex: Knex): Promise<void> {
       sec_groups: Array.from({ length: 3 }, () => faker.datatype.string()),
     };
   };
-  const items = Array(6)
-    .fill(null)
-    .map((): Omit<ItemDto, "created_at" | "updated_at"> => {
+
+  const containers: Omit<ContainerDto, "created_at" | "updated_at">[] = [
+    {
+      ...createBaseEntity(),
+      location: StorageLocationsEnum.Center,
+    },
+    {
+      ...createBaseEntity(),
+      location: StorageLocationsEnum.North,
+    },
+    {
+      ...createBaseEntity(),
+      location: StorageLocationsEnum.South,
+    },
+  ];
+
+  const items = [0, 1, 2, 0, 1, 2].map(
+    (container_index): Omit<ItemDto, "created_at" | "updated_at"> => {
       return {
         ...createBaseEntity(),
         name: faker.name.findName(),
+        container_id: containers[container_index].id,
       };
-    });
+    }
+  );
 
   const softwares = [0, 1].map(
-    (x): Pick<SoftwareItemDto, "item_id" | "is_open_source"> => {
+    (item_index): Pick<SoftwareItemDto, "item_id" | "is_open_source"> => {
       return {
-        item_id: items[x].id,
+        item_id: items[item_index].id,
         is_open_source: false,
       };
     }
   );
 
   const office_equipments = [2, 3].map(
-    (x): Pick<OfficeEquipmentItemDto, "item_id" | "is_fragile"> => {
+    (item_index): Pick<OfficeEquipmentItemDto, "item_id" | "is_fragile"> => {
       return {
-        item_id: items[x].id,
+        item_id: items[item_index].id,
         is_fragile: false,
       };
     }
   );
 
   const office_fornitures = [4, 5].map(
-    (x): Pick<OfficeFornitureItemDto, "item_id" | "is_wood"> => {
+    (item_index): Pick<OfficeFornitureItemDto, "item_id" | "is_wood"> => {
       return {
-        item_id: items[x].id,
+        item_id: items[item_index].id,
         is_wood: false,
       };
     }
   );
 
-  const storage_locations: Omit<
-    StorageLocationDto,
-    "created_at" | "updated_at"
-  >[] = [
-    {
-      id: uuidv4(),
-      name: StorageLocationsEnum.Center,
-      reality_id: 1,
-      classification: "UNCLAS",
-      created_by: "eyal",
-      updated_by: "azran",
-      is_deleted: false,
-      is_classified: false,
-      sec_groups: [],
-    },
-    {
-      id: uuidv4(),
-      name: StorageLocationsEnum.North,
-      reality_id: 1,
-      classification: "UNCLAS",
-      created_by: "eyal",
-      updated_by: "azran",
-      is_deleted: false,
-      is_classified: false,
-      sec_groups: [],
-    },
-    {
-      id: uuidv4(),
-      name: StorageLocationsEnum.South,
-      reality_id: 1,
-      classification: "UNCLAS",
-      created_by: "eyal",
-      updated_by: "azran",
-      is_deleted: false,
-      is_classified: false,
-      sec_groups: [],
-    },
-  ];
-
-  const containers: Omit<ContainerDto, "created_at" | "updated_at">[] = [
-    {
-      ...createBaseEntity(),
-      storage_locations_id: storage_locations[0].id,
-    },
-    {
-      ...createBaseEntity(),
-      storage_locations_id: storage_locations[1].id,
-    },
-    {
-      ...createBaseEntity(),
-      storage_locations_id: storage_locations[2].id,
-    },
-  ];
-
-  const container_items = [
-    [0, 0],
-    [1, 1],
-  ].map((x): { item_id: string; container_id: string } => {
-    return {
-      item_id: items[x[0]].id,
-      container_id: containers[x[1]].id,
-    };
-  });
-
+  await knex("containers").insert(containers);
   await knex("items").insert(items);
   await knex("software").insert(softwares);
   await knex("office_equipment").insert(office_equipments);
   await knex("office_forniture").insert(office_fornitures);
-  await knex("storage_locations").insert(storage_locations);
-  await knex("containers").insert(containers);
-  await knex("container_items").insert(container_items);
 }

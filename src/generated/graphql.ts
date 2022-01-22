@@ -94,7 +94,7 @@ export interface Container extends BaseEntity {
   items: Array<Maybe<Item>>;
   lastUpdateBy?: Maybe<Scalars['String']>;
   lastUpdateTime?: Maybe<Scalars['ZonedDateTime']>;
-  location: StorageLocation;
+  location: StorageLocationsEnum;
   realityId: Scalars['Int'];
   secGroups?: Maybe<Array<Maybe<Scalars['String']>>>;
 }
@@ -210,21 +210,6 @@ export interface Software extends AbstractItem {
   secGroups?: Maybe<Array<Maybe<Scalars['String']>>>;
 }
 
-export interface StorageLocation extends BaseEntity {
-  __typename?: 'StorageLocation';
-  classification?: Maybe<ClassificationEnum>;
-  createdBy: Scalars['String'];
-  creationTime: Scalars['ZonedDateTime'];
-  id: Scalars['String'];
-  isClassified?: Maybe<Scalars['Boolean']>;
-  isDeleted?: Maybe<Scalars['Boolean']>;
-  lastUpdateBy?: Maybe<Scalars['String']>;
-  lastUpdateTime?: Maybe<Scalars['ZonedDateTime']>;
-  location: StorageLocationsEnum;
-  realityId: Scalars['Int'];
-  secGroups?: Maybe<Array<Maybe<Scalars['String']>>>;
-}
-
 export enum StorageLocationsEnum {
   Center = 'CENTER',
   North = 'NORTH',
@@ -307,7 +292,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   AbstractItem: ResolversTypes['OfficeEquipment'] | ResolversTypes['OfficeForniture'] | ResolversTypes['Software'];
   AddOfficeEquipment: AddOfficeEquipment;
-  BaseEntity: ResolversTypes['Container'] | ResolversTypes['StorageLocation'];
+  BaseEntity: ResolversTypes['Container'];
   BigInt: ResolverTypeWrapper<Scalars['BigInt']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Cat: ResolverTypeWrapper<Cat>;
@@ -326,7 +311,6 @@ export type ResolversTypes = {
   Owner: ResolverTypeWrapper<Owner>;
   Query: ResolverTypeWrapper<{}>;
   Software: ResolverTypeWrapper<Software>;
-  StorageLocation: ResolverTypeWrapper<StorageLocation>;
   StorageLocationsEnum: StorageLocationsEnum;
   String: ResolverTypeWrapper<Scalars['String']>;
   Subscription: ResolverTypeWrapper<{}>;
@@ -337,7 +321,7 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   AbstractItem: ResolversParentTypes['OfficeEquipment'] | ResolversParentTypes['OfficeForniture'] | ResolversParentTypes['Software'];
   AddOfficeEquipment: AddOfficeEquipment;
-  BaseEntity: ResolversParentTypes['Container'] | ResolversParentTypes['StorageLocation'];
+  BaseEntity: ResolversParentTypes['Container'];
   BigInt: Scalars['BigInt'];
   Boolean: Scalars['Boolean'];
   Cat: Cat;
@@ -353,7 +337,6 @@ export type ResolversParentTypes = {
   Owner: Owner;
   Query: {};
   Software: Software;
-  StorageLocation: StorageLocation;
   String: Scalars['String'];
   Subscription: {};
   ZonedDateTime: Scalars['ZonedDateTime'];
@@ -376,7 +359,7 @@ export type AbstractItemResolvers<ContextType = any, ParentType extends Resolver
 };
 
 export type BaseEntityResolvers<ContextType = any, ParentType extends ResolversParentTypes['BaseEntity'] = ResolversParentTypes['BaseEntity']> = {
-  __resolveType: TypeResolveFn<'Container' | 'StorageLocation', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'Container', ParentType, ContextType>;
   classification?: Resolver<Maybe<ResolversTypes['ClassificationEnum']>, ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   creationTime?: Resolver<ResolversTypes['ZonedDateTime'], ParentType, ContextType>;
@@ -412,7 +395,7 @@ export type ContainerResolvers<ContextType = any, ParentType extends ResolversPa
   items?: Resolver<Array<Maybe<ResolversTypes['Item']>>, ParentType, ContextType>;
   lastUpdateBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   lastUpdateTime?: Resolver<Maybe<ResolversTypes['ZonedDateTime']>, ParentType, ContextType>;
-  location?: Resolver<ResolversTypes['StorageLocation'], ParentType, ContextType>;
+  location?: Resolver<ResolversTypes['StorageLocationsEnum'], ParentType, ContextType>;
   realityId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   secGroups?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -492,21 +475,6 @@ export type SoftwareResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type StorageLocationResolvers<ContextType = any, ParentType extends ResolversParentTypes['StorageLocation'] = ResolversParentTypes['StorageLocation']> = {
-  classification?: Resolver<Maybe<ResolversTypes['ClassificationEnum']>, ParentType, ContextType>;
-  createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  creationTime?: Resolver<ResolversTypes['ZonedDateTime'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  isClassified?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  isDeleted?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  lastUpdateBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  lastUpdateTime?: Resolver<Maybe<ResolversTypes['ZonedDateTime']>, ParentType, ContextType>;
-  location?: Resolver<ResolversTypes['StorageLocationsEnum'], ParentType, ContextType>;
-  realityId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  secGroups?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   catCreated?: SubscriptionResolver<Maybe<ResolversTypes['Cat']>, "catCreated", ParentType, ContextType>;
 };
@@ -528,7 +496,6 @@ export type Resolvers<ContextType = any> = {
   Owner?: OwnerResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Software?: SoftwareResolvers<ContextType>;
-  StorageLocation?: StorageLocationResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
   ZonedDateTime?: GraphQLScalarType;
 };

@@ -15,6 +15,7 @@ export interface BaseEntityDto {
 
 export interface ItemDto extends BaseEntityDto {
   name: string;
+  container_id: string;
 }
 
 export interface ItemDtoRef extends BaseEntityDto {
@@ -34,10 +35,5 @@ export interface OfficeEquipmentItemDto extends ItemDto, ItemDtoRef {
 }
 
 export interface ContainerDto extends BaseEntityDto {
-  storage_locations_id: string;
-  item_id?: string;
-}
-
-export interface StorageLocationDto extends BaseEntityDto {
-  name: StorageLocationsEnum;
+  location: StorageLocationsEnum;
 }
