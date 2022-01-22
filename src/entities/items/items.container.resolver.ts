@@ -1,6 +1,6 @@
 import { Context, Parent, ResolveField, Resolver } from "@nestjs/graphql";
 import DataLoader from "dataloader";
-import { Container, Item } from "../../generated/graphql";
+import { Container } from "../../generated/graphql";
 import * as _ from "lodash";
 import {
   OfficeEquipmentWithRef,

@@ -6,6 +6,7 @@ import { AppModule } from "./app.module";
 import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Configuration } from "./config/config.factory";
+import { GqlExceptionStackTraceFilter } from "./common/exception.filter";
 
 async function bootstrap() {
   let app: INestApplication;
@@ -17,6 +18,7 @@ async function bootstrap() {
   const logger = app.get<Logger>(WINSTON_MODULE_PROVIDER);
   const port = app.get(ConfigService).get<Configuration>("config").server.port;
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalFilters(new GqlExceptionStackTraceFilter());
   try {
     await app.listen(port);
     logger.info(`Application is running on: ${await app.getUrl()}`);

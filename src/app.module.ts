@@ -16,6 +16,8 @@ import { ItemsModule } from "./entities/items/items.module";
 import { ContainerService } from "./entities/container/containers.service";
 import { ContainersModule } from "./entities/container/containers.module";
 import { createContainersLoader } from "./entities/container/containers.loader";
+import { GraphQLError, GraphQLFormattedError } from "graphql";
+import { isProd } from "./utils/id_prod";
 
 @Module({
   imports: [
@@ -40,6 +42,16 @@ import { createContainersLoader } from "./entities/container/containers.loader";
           ownersLoader: createOwnersLoader(ownersService),
           containersLoader: createContainersLoader(containerService),
         }),
+        formatError: (error: GraphQLError) => {
+          // don't print stacktrace in prod
+          if (isProd()) {
+            delete error.extensions.exception.stacktrace;
+          }
+          const graphQLFormattedError: GraphQLFormattedError = {
+            ...error,
+          };
+          return graphQLFormattedError;
+        },
       }),
       inject: [OwnersService, ContainerService],
     }),

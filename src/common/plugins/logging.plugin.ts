@@ -17,7 +17,9 @@ export class LoggingPlugin implements ApolloServerPlugin {
   ): Promise<GraphQLRequestListener> {
     const logger = this.logger;
     return {
-      async willSendResponse() {},
+      async willSendResponse() {
+        // logger.info("logging plugin");
+      },
     };
   }
 }
