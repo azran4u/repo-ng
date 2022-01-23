@@ -91,12 +91,16 @@ export interface Container extends BaseEntity {
   id: Scalars['String'];
   isClassified?: Maybe<Scalars['Boolean']>;
   isDeleted?: Maybe<Scalars['Boolean']>;
-  items: Array<Maybe<Item>>;
+  items?: Maybe<Array<Maybe<Item>>>;
   lastUpdateBy?: Maybe<Scalars['String']>;
   lastUpdateTime?: Maybe<Scalars['ZonedDateTime']>;
   location: StorageLocationsEnum;
   realityId: Scalars['Int'];
   secGroups?: Maybe<Array<Maybe<Scalars['String']>>>;
+}
+
+export interface ContainersFilter {
+  byLocation?: InputMaybe<Array<InputMaybe<StorageLocationsEnum>>>;
 }
 
 export interface CreateCatInput {
@@ -180,12 +184,18 @@ export interface Query {
   __typename?: 'Query';
   cat?: Maybe<Cat>;
   cats?: Maybe<Array<Maybe<Cat>>>;
+  containers: Array<Maybe<Container>>;
   items: Array<Maybe<Item>>;
 }
 
 
 export interface QueryCatArgs {
   id: Scalars['ID'];
+}
+
+
+export interface QueryContainersArgs {
+  filter?: InputMaybe<ContainersFilter>;
 }
 
 
@@ -298,7 +308,8 @@ export type ResolversTypes = {
   Cat: ResolverTypeWrapper<Cat>;
   CatTypeEnum: CatTypeEnum;
   ClassificationEnum: ClassificationEnum;
-  Container: ResolverTypeWrapper<Omit<Container, 'items'> & { items: Array<Maybe<ResolversTypes['Item']>> }>;
+  Container: ResolverTypeWrapper<Omit<Container, 'items'> & { items?: Maybe<Array<Maybe<ResolversTypes['Item']>>> }>;
+  ContainersFilter: ContainersFilter;
   CreateCatInput: CreateCatInput;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
@@ -325,7 +336,8 @@ export type ResolversParentTypes = {
   BigInt: Scalars['BigInt'];
   Boolean: Scalars['Boolean'];
   Cat: Cat;
-  Container: Omit<Container, 'items'> & { items: Array<Maybe<ResolversParentTypes['Item']>> };
+  Container: Omit<Container, 'items'> & { items?: Maybe<Array<Maybe<ResolversParentTypes['Item']>>> };
+  ContainersFilter: ContainersFilter;
   CreateCatInput: CreateCatInput;
   ID: Scalars['ID'];
   Int: Scalars['Int'];
@@ -392,7 +404,7 @@ export type ContainerResolvers<ContextType = any, ParentType extends ResolversPa
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   isClassified?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   isDeleted?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  items?: Resolver<Array<Maybe<ResolversTypes['Item']>>, ParentType, ContextType>;
+  items?: Resolver<Maybe<Array<Maybe<ResolversTypes['Item']>>>, ParentType, ContextType>;
   lastUpdateBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   lastUpdateTime?: Resolver<Maybe<ResolversTypes['ZonedDateTime']>, ParentType, ContextType>;
   location?: Resolver<ResolversTypes['StorageLocationsEnum'], ParentType, ContextType>;
@@ -455,6 +467,7 @@ export type OwnerResolvers<ContextType = any, ParentType extends ResolversParent
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   cat?: Resolver<Maybe<ResolversTypes['Cat']>, ParentType, ContextType, RequireFields<QueryCatArgs, 'id'>>;
   cats?: Resolver<Maybe<Array<Maybe<ResolversTypes['Cat']>>>, ParentType, ContextType>;
+  containers?: Resolver<Array<Maybe<ResolversTypes['Container']>>, ParentType, ContextType, RequireFields<QueryContainersArgs, never>>;
   items?: Resolver<Array<Maybe<ResolversTypes['Item']>>, ParentType, ContextType, RequireFields<QueryItemsArgs, never>>;
 };
 

@@ -6,7 +6,7 @@ import { AppModule } from "./app.module";
 import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Configuration } from "./config/config.factory";
-import { GqlExceptionStackTraceFilter } from "./common/exception.filter";
+import { GqlExceptionStackTraceFilter } from "./common/exceptions.filter/exception.filter";
 
 async function bootstrap() {
   let app: INestApplication;

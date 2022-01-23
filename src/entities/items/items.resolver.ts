@@ -4,6 +4,7 @@ import { ItemsService } from "./items.service";
 import * as _ from "lodash";
 import { fieldsList, fieldsMap } from "graphql-fields-list";
 import { GraphQLError } from "graphql";
+import { RealityId } from "../../common/decorator/reality.id.decorator";
 
 @Resolver("Item")
 export class ItemsResolver {
@@ -15,11 +16,14 @@ export class ItemsResolver {
   }
 
   @Query("items")
-  async getItems(@Info() info, @Args("filter") args?: ItemsFilter) {
-    // const fl = fieldsList(info);
+  async getItems(
+    @Info() info,
+    @Args("filter") args?: ItemsFilter,
+    @RealityId() realityId?: string
+  ) {
+    // const fl = fieldsList(info); may be used to select only requested fields
     const fm = fieldsMap(info) as any;
     if (fm?.container?.items) throw new GraphQLError(`Query is too complex`);
-    debugger;
     return this.itemsService.findAll(args?.byTypes);
   }
 }

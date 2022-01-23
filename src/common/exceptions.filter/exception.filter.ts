@@ -6,7 +6,6 @@ import { GraphQLError } from "graphql";
 export class GqlExceptionStackTraceFilter implements GqlExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     // const gqlHost = GqlArgumentsHost.create(host);
-    debugger;
     exception.stack = "";
     return exception;
   }

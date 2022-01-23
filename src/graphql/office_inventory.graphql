@@ -153,10 +153,15 @@ input ItemsFilter {
   byTypes: [ItemTypes]
 }
 
+input ContainersFilter {
+  byLocation: [StorageLocationsEnum]
+}
+
 type Mutation {
   addOfficeEquipment(input: [AddOfficeEquipment]!): [OfficeEquipment]!
 }
 
 type Query {
   items(filter: ItemsFilter): [Item]!
+  containers(filter: ContainersFilter): [Container]!
 }

@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { GqlExceptionStackTraceFilter } from "./exception.filter";
+import { GqlExceptionStackTraceFilter } from "./exceptions.filter/exception.filter";
 import { LoggingPlugin } from "./plugins/logging.plugin";
 
 @Module({

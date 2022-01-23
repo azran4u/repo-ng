@@ -44,7 +44,7 @@ import { isProd } from "./utils/id_prod";
         }),
         formatError: (error: GraphQLError) => {
           // don't print stacktrace in prod
-          if (isProd()) {
+          if (isProd() || true) {
             delete error.extensions.exception.stacktrace;
           }
           const graphQLFormattedError: GraphQLFormattedError = {
