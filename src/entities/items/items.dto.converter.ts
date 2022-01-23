@@ -1,12 +1,12 @@
 import {
   OfficeEquipmentItemDto,
-  OfficeFornitureItemDto,
+  OfficeFurnitureItemDto,
   SoftwareItemDto,
 } from "../../dal/dal.types";
 import { itemDtoToItemConverter } from "./item.dto.converter";
 import {
   OfficeEquipmentWithRef,
-  OfficeFornitureWithRef,
+  OfficeFurnitureWithRef,
   SoftwareWithRef,
 } from "./item.with.references";
 
@@ -32,12 +32,12 @@ export function officeEquipmentItemDtoToOfficeEquipmentItemConverter(
   };
 }
 
-export function officeFornitureItemDtoToOfficeFornitureConverter(
-  dto: OfficeFornitureItemDto
-): OfficeFornitureWithRef {
+export function officeFurnitureItemDtoToOfficeFurnitureConverter(
+  dto: OfficeFurnitureItemDto
+): OfficeFurnitureWithRef {
   return {
     ...itemDtoToItemConverter(dto),
-    __typename: "OfficeForniture",
+    __typename: "OfficeFurniture",
     isWood: dto.is_wood,
     container_id: dto.container_id,
   };

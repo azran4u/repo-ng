@@ -3,13 +3,14 @@ import { Knex } from "knex";
 import { DalService } from "../../dal/dal.service";
 import {
   OfficeEquipmentItemDto,
-  OfficeFornitureItemDto,
+  OfficeFurnitureItemDto,
   SoftwareItemDto,
 } from "../../dal/dal.types";
 import { Item, ItemTypes } from "../../generated/graphql";
+import { ItemWithRef } from "./item.with.references";
 import {
   softwareItemDtoToSoftwareItemConverter,
-  officeFornitureItemDtoToOfficeFornitureConverter,
+  officeFurnitureItemDtoToOfficeFurnitureConverter,
   officeEquipmentItemDtoToOfficeEquipmentItemConverter,
 } from "./items.dto.converter";
 
@@ -20,8 +21,8 @@ export class ItemsService {
     this.knex = this.dalService.knex;
   }
 
-  async findAll(filterByEntityType?: ItemTypes[]): Promise<Item[]> {
-    const queries: Promise<Item[]>[] = [];
+  async findAll(filterByEntityType?: ItemTypes[]): Promise<ItemWithRef[]> {
+    const queries: Promise<ItemWithRef[]>[] = [];
 
     if (
       !filterByEntityType ||
@@ -34,7 +35,7 @@ export class ItemsService {
       !filterByEntityType ||
       filterByEntityType?.includes(ItemTypes.OfficeFurniture)
     ) {
-      queries.push(this.getAllOfficeForniture());
+      queries.push(this.getAllOfficeFurniture());
     }
 
     if (
@@ -69,15 +70,15 @@ export class ItemsService {
     return softwareItems?.length > 0 ? softwareItems : [];
   }
 
-  private async getAllOfficeForniture() {
-    const officeFornitureItemDtos: OfficeFornitureItemDto[] = await this.knex
+  private async getAllOfficeFurniture() {
+    const officeFurnitureItemDtos: OfficeFurnitureItemDto[] = await this.knex
       .from("office_forniture")
       .innerJoin("items", "office_forniture.item_id", "items.id");
 
-    const officeFornitureItems = officeFornitureItemDtos.map((dto) =>
-      officeFornitureItemDtoToOfficeFornitureConverter(dto)
+    const officeFurnitureItems = officeFurnitureItemDtos.map((dto) =>
+      officeFurnitureItemDtoToOfficeFurnitureConverter(dto)
     );
-    return officeFornitureItems?.length > 0 ? officeFornitureItems : [];
+    return officeFurnitureItems?.length > 0 ? officeFurnitureItems : [];
   }
 
   private async getAllOfficeEquipment() {

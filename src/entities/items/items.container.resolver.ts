@@ -4,7 +4,7 @@ import { Container } from "../../generated/graphql";
 import * as _ from "lodash";
 import {
   OfficeEquipmentWithRef,
-  OfficeFornitureWithRef,
+  OfficeFurnitureWithRef,
   SoftwareWithRef,
 } from "./item.with.references";
 
@@ -19,11 +19,11 @@ export class SoftwareItemsContainerResolver {
     return containersLoader.load(item.container_id);
   }
 }
-@Resolver("OfficeForniture")
-export class OfficeFornitureItemsContainerResolver {
+@Resolver("OfficeFurniture")
+export class OfficeFurnitureItemsContainerResolver {
   @ResolveField("container")
   async container(
-    @Parent() item: OfficeFornitureWithRef,
+    @Parent() item: OfficeFurnitureWithRef,
     @Context("containersLoader") containersLoader: DataLoader<string, Container>
   ) {
     if (_.isNil(item.container_id)) return undefined;

@@ -26,7 +26,7 @@ export interface SoftwareItemDto extends ItemDto, ItemDtoRef {
   is_open_source?: boolean;
 }
 
-export interface OfficeFornitureItemDto extends ItemDto, ItemDtoRef {
+export interface OfficeFurnitureItemDto extends ItemDto, ItemDtoRef {
   is_wood?: boolean;
 }
 
@@ -36,4 +36,8 @@ export interface OfficeEquipmentItemDto extends ItemDto, ItemDtoRef {
 
 export interface ContainerDto extends BaseEntityDto {
   location: StorageLocationsEnum;
+}
+
+export interface ContainerDtoWithRef extends BaseEntityDto {
+  item_id: string;
 }

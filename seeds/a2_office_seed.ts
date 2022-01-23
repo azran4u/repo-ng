@@ -6,7 +6,7 @@ import {
   ContainerDto,
   ItemDto,
   OfficeEquipmentItemDto,
-  OfficeFornitureItemDto,
+  OfficeFurnitureItemDto,
   SoftwareItemDto,
 } from "../src/dal/dal.types";
 import { randomIntFromInterval } from "../src/utils/randomIntFromInterval";
@@ -79,7 +79,7 @@ export async function seed(knex: Knex): Promise<void> {
   );
 
   const office_fornitures = [4, 5].map(
-    (item_index): Pick<OfficeFornitureItemDto, "item_id" | "is_wood"> => {
+    (item_index): Pick<OfficeFurnitureItemDto, "item_id" | "is_wood"> => {
       return {
         item_id: items[item_index].id,
         is_wood: false,

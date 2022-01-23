@@ -60,7 +60,7 @@ type OfficeEquipment implements AbstractItem {
   secGroups: [String]
 }
 
-type OfficeForniture implements AbstractItem {
+type OfficeFurniture implements AbstractItem {
   isWood: Boolean
 
   # Item
@@ -100,7 +100,7 @@ type Software implements AbstractItem {
   secGroups: [String]
 }
 
-union Item = OfficeEquipment | OfficeForniture | Software
+union Item = OfficeEquipment | OfficeFurniture | Software
 
 type Container implements BaseEntity {
   items: [Item]
@@ -149,10 +149,6 @@ enum ItemTypes {
   OFFICE_FURNITURE
 }
 
-input ItemsFilter {
-  byTypes: [ItemTypes]
-}
-
 input ContainersFilter {
   byLocation: [StorageLocationsEnum]
 }
@@ -162,6 +158,6 @@ type Mutation {
 }
 
 type Query {
-  items(filter: ItemsFilter): [Item]!
+  items: [Item]!
   containers(filter: ContainersFilter): [Container]!
 }

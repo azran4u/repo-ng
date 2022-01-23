@@ -1,6 +1,6 @@
 import {
   OfficeEquipment,
-  OfficeForniture,
+  OfficeFurniture,
   Software,
 } from "../../generated/graphql";
 
@@ -12,6 +12,11 @@ export interface OfficeEquipmentWithRef extends OfficeEquipment {
   container_id: string;
 }
 
-export interface OfficeFornitureWithRef extends OfficeForniture {
+export interface OfficeFurnitureWithRef extends OfficeFurniture {
   container_id: string;
 }
+
+export type ItemWithRef =
+  | SoftwareWithRef
+  | OfficeEquipmentWithRef
+  | OfficeFurnitureWithRef;

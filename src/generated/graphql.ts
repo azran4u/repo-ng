@@ -110,16 +110,12 @@ export interface CreateCatInput {
   type?: InputMaybe<CatTypeEnum>;
 }
 
-export type Item = OfficeEquipment | OfficeForniture | Software;
+export type Item = OfficeEquipment | OfficeFurniture | Software;
 
 export enum ItemTypes {
   OfficeEquipment = 'OFFICE_EQUIPMENT',
   OfficeFurniture = 'OFFICE_FURNITURE',
   Software = 'SOFTWARE'
-}
-
-export interface ItemsFilter {
-  byTypes?: InputMaybe<Array<InputMaybe<ItemTypes>>>;
 }
 
 export interface Mutation {
@@ -155,8 +151,8 @@ export interface OfficeEquipment extends AbstractItem {
   secGroups?: Maybe<Array<Maybe<Scalars['String']>>>;
 }
 
-export interface OfficeForniture extends AbstractItem {
-  __typename?: 'OfficeForniture';
+export interface OfficeFurniture extends AbstractItem {
+  __typename?: 'OfficeFurniture';
   classification?: Maybe<ClassificationEnum>;
   container?: Maybe<Container>;
   createdBy: Scalars['String'];
@@ -196,11 +192,6 @@ export interface QueryCatArgs {
 
 export interface QueryContainersArgs {
   filter?: InputMaybe<ContainersFilter>;
-}
-
-
-export interface QueryItemsArgs {
-  filter?: InputMaybe<ItemsFilter>;
 }
 
 export interface Software extends AbstractItem {
@@ -300,7 +291,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  AbstractItem: ResolversTypes['OfficeEquipment'] | ResolversTypes['OfficeForniture'] | ResolversTypes['Software'];
+  AbstractItem: ResolversTypes['OfficeEquipment'] | ResolversTypes['OfficeFurniture'] | ResolversTypes['Software'];
   AddOfficeEquipment: AddOfficeEquipment;
   BaseEntity: ResolversTypes['Container'];
   BigInt: ResolverTypeWrapper<Scalars['BigInt']>;
@@ -313,12 +304,11 @@ export type ResolversTypes = {
   CreateCatInput: CreateCatInput;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  Item: ResolversTypes['OfficeEquipment'] | ResolversTypes['OfficeForniture'] | ResolversTypes['Software'];
+  Item: ResolversTypes['OfficeEquipment'] | ResolversTypes['OfficeFurniture'] | ResolversTypes['Software'];
   ItemTypes: ItemTypes;
-  ItemsFilter: ItemsFilter;
   Mutation: ResolverTypeWrapper<{}>;
   OfficeEquipment: ResolverTypeWrapper<OfficeEquipment>;
-  OfficeForniture: ResolverTypeWrapper<OfficeForniture>;
+  OfficeFurniture: ResolverTypeWrapper<OfficeFurniture>;
   Owner: ResolverTypeWrapper<Owner>;
   Query: ResolverTypeWrapper<{}>;
   Software: ResolverTypeWrapper<Software>;
@@ -330,7 +320,7 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  AbstractItem: ResolversParentTypes['OfficeEquipment'] | ResolversParentTypes['OfficeForniture'] | ResolversParentTypes['Software'];
+  AbstractItem: ResolversParentTypes['OfficeEquipment'] | ResolversParentTypes['OfficeFurniture'] | ResolversParentTypes['Software'];
   AddOfficeEquipment: AddOfficeEquipment;
   BaseEntity: ResolversParentTypes['Container'];
   BigInt: Scalars['BigInt'];
@@ -341,11 +331,10 @@ export type ResolversParentTypes = {
   CreateCatInput: CreateCatInput;
   ID: Scalars['ID'];
   Int: Scalars['Int'];
-  Item: ResolversParentTypes['OfficeEquipment'] | ResolversParentTypes['OfficeForniture'] | ResolversParentTypes['Software'];
-  ItemsFilter: ItemsFilter;
+  Item: ResolversParentTypes['OfficeEquipment'] | ResolversParentTypes['OfficeFurniture'] | ResolversParentTypes['Software'];
   Mutation: {};
   OfficeEquipment: OfficeEquipment;
-  OfficeForniture: OfficeForniture;
+  OfficeFurniture: OfficeFurniture;
   Owner: Owner;
   Query: {};
   Software: Software;
@@ -355,7 +344,7 @@ export type ResolversParentTypes = {
 };
 
 export type AbstractItemResolvers<ContextType = any, ParentType extends ResolversParentTypes['AbstractItem'] = ResolversParentTypes['AbstractItem']> = {
-  __resolveType: TypeResolveFn<'OfficeEquipment' | 'OfficeForniture' | 'Software', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'OfficeEquipment' | 'OfficeFurniture' | 'Software', ParentType, ContextType>;
   classification?: Resolver<Maybe<ResolversTypes['ClassificationEnum']>, ParentType, ContextType>;
   container?: Resolver<Maybe<ResolversTypes['Container']>, ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -414,7 +403,7 @@ export type ContainerResolvers<ContextType = any, ParentType extends ResolversPa
 };
 
 export type ItemResolvers<ContextType = any, ParentType extends ResolversParentTypes['Item'] = ResolversParentTypes['Item']> = {
-  __resolveType: TypeResolveFn<'OfficeEquipment' | 'OfficeForniture' | 'Software', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'OfficeEquipment' | 'OfficeFurniture' | 'Software', ParentType, ContextType>;
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
@@ -439,7 +428,7 @@ export type OfficeEquipmentResolvers<ContextType = any, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type OfficeFornitureResolvers<ContextType = any, ParentType extends ResolversParentTypes['OfficeForniture'] = ResolversParentTypes['OfficeForniture']> = {
+export type OfficeFurnitureResolvers<ContextType = any, ParentType extends ResolversParentTypes['OfficeFurniture'] = ResolversParentTypes['OfficeFurniture']> = {
   classification?: Resolver<Maybe<ResolversTypes['ClassificationEnum']>, ParentType, ContextType>;
   container?: Resolver<Maybe<ResolversTypes['Container']>, ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -468,7 +457,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   cat?: Resolver<Maybe<ResolversTypes['Cat']>, ParentType, ContextType, RequireFields<QueryCatArgs, 'id'>>;
   cats?: Resolver<Maybe<Array<Maybe<ResolversTypes['Cat']>>>, ParentType, ContextType>;
   containers?: Resolver<Array<Maybe<ResolversTypes['Container']>>, ParentType, ContextType, RequireFields<QueryContainersArgs, never>>;
-  items?: Resolver<Array<Maybe<ResolversTypes['Item']>>, ParentType, ContextType, RequireFields<QueryItemsArgs, never>>;
+  items?: Resolver<Array<Maybe<ResolversTypes['Item']>>, ParentType, ContextType>;
 };
 
 export type SoftwareResolvers<ContextType = any, ParentType extends ResolversParentTypes['Software'] = ResolversParentTypes['Software']> = {
@@ -505,7 +494,7 @@ export type Resolvers<ContextType = any> = {
   Item?: ItemResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   OfficeEquipment?: OfficeEquipmentResolvers<ContextType>;
-  OfficeForniture?: OfficeFornitureResolvers<ContextType>;
+  OfficeFurniture?: OfficeFurnitureResolvers<ContextType>;
   Owner?: OwnerResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Software?: SoftwareResolvers<ContextType>;

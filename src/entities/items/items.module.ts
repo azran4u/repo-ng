@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { DalModule } from "../../dal/dal.module";
 import {
   OfficeEquipmentItemsContainerResolver,
-  OfficeFornitureItemsContainerResolver,
+  OfficeFurnitureItemsContainerResolver,
   SoftwareItemsContainerResolver,
 } from "./items.container.resolver";
 import { ItemsResolver } from "./items.resolver";
@@ -14,8 +14,9 @@ import { ItemsService } from "./items.service";
     ItemsService,
     ItemsResolver,
     OfficeEquipmentItemsContainerResolver,
-    OfficeFornitureItemsContainerResolver,
+    OfficeFurnitureItemsContainerResolver,
     SoftwareItemsContainerResolver,
   ],
+  exports: [ItemsService],
 })
 export class ItemsModule {}
