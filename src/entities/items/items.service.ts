@@ -6,12 +6,12 @@ import {
   OfficeFurnitureItemDto,
   SoftwareItemDto,
 } from "../../dal/dal.types";
-import { Item, ItemTypes } from "../../generated/graphql";
+import { ItemTypes } from "../../generated/graphql";
 import { ItemWithRef } from "./item.with.references";
 import {
-  softwareItemDtoToSoftwareItemConverter,
-  officeFurnitureItemDtoToOfficeFurnitureConverter,
   officeEquipmentItemDtoToOfficeEquipmentItemConverter,
+  officeFurnitureItemDtoToOfficeFurnitureConverter,
+  softwareItemDtoToSoftwareItemConverter,
 } from "./items.dto.converter";
 
 @Injectable()

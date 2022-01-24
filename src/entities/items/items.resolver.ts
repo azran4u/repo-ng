@@ -1,11 +1,10 @@
-import { Args, Info, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Info, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { Item, ItemTypes } from "../../generated/graphql";
 import { ItemsService } from "./items.service";
 import * as _ from "lodash";
-import { fieldsList, fieldsMap } from "graphql-fields-list";
-import { GraphQLError } from "graphql";
 import { RealityId } from "../../common/decorator/reality.id.decorator";
 import { extractUnionTypesFromGraphqlInfo } from "../../utils/extract.union.types.from.graphql.info";
+import { isTooComplex } from "../../utils/is.too.complex.query";
 
 @Resolver("Item")
 export class ItemsResolver {
@@ -21,9 +20,7 @@ export class ItemsResolver {
     const types = extractUnionTypesFromGraphqlInfo(info).map(
       (x) => ItemTypes[x]
     );
-    // const fl = fieldsList(info); may be used to select only requested fields
-    const fm = fieldsMap(info) as any;
-    if (fm?.container?.items) throw new GraphQLError(`Query is too complex`);
+    isTooComplex(info, ["container", "items"]);
     return this.itemsService.findAll(types);
   }
 }

@@ -35,16 +35,16 @@ export class ContainerService {
     }
   }
   async findAllByFilter(
-    withItems: boolean = false,
-    itemsTypes?: ItemTypes[],
+    shouldFecthItems: boolean = false,
+    itemTypesToFetch?: ItemTypes[],
     byLocation?: StorageLocationsEnum[]
   ): Promise<Container[]> {
     try {
-      if (withItems) {
+      if (shouldFecthItems) {
         const containerDtos: ContainerDto[] = await this.dalService.knex
           .from("containers")
           .whereIn("location", byLocation);
-        const items = await this.itemsService.findAll(itemsTypes);
+        const items = await this.itemsService.findAll(itemTypesToFetch);
         const containersMap = new Map<string, Container>();
         containerDtos.map((containerDto) => {
           const container_from_map = containersMap.get(containerDto.id);
@@ -70,48 +70,5 @@ export class ContainerService {
         `error in ContainerService -> findByItemsIds ${error?.message}`
       );
     }
-    // select to_json(a.*) as aa, to_json(b.*) as bb
-    // from "containers" as "a"
-    // inner join "items" as "b"
-    // on "a"."id" = "b"."container_id"
-    // where "location" in ( 'SOUTH', 'NORTH')
-    // query = this.dalService.knex.select(
-    //   this.dalService.knex.raw(
-    //     'row_to_json("containers".*) AS "containers", row_to_json("items".*) AS "items"'
-    //   )
-    // );
-    // query.from("containers");
-    // query.innerJoin("items", "containers.id", "items.container_id");
-
-    // return Array.from(containersMap.values());
-
-    // } else {
-    //   query = this.dalService.knex.from("containers");
-    // }
-
-    // if (byLocation && byLocation.length > 0) {
-    //   query.whereIn("location", byLocation);
-    // }
-
-    // const containerDtos: Container[] = await query;
-
-    // if (withItems) {
-    //   const containersMap = new Map<string, Container>();
-    //   containerDtos.map((container) => {
-    //     const container_from_map = containersMap.get(container.id);
-    //     if (!container_from_map) {
-    //       if (_.isNil(container.items)) {
-    //         container.items = [];
-    //       }
-    //       containersMap.set(container.id, container);
-    //     } else {
-    //       if (!_.isNil(container.items)) {
-    //         container_from_map.items.push(...container.items);
-    //       }
-    //     }
-    //   });
-    //   return Array.from(containersMap.values());
-    // }
-    // return containerDtos ?? [];
   }
 }

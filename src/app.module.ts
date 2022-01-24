@@ -17,7 +17,7 @@ import { ContainerService } from "./entities/container/containers.service";
 import { ContainersModule } from "./entities/container/containers.module";
 import { createContainersLoader } from "./entities/container/containers.loader";
 import { GraphQLError, GraphQLFormattedError } from "graphql";
-import { isProd } from "./utils/id_prod";
+import { isProd } from "./utils/is.prod";
 
 @Module({
   imports: [
