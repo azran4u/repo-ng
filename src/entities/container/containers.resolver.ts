@@ -1,17 +1,44 @@
-import { Args, Info, Query, Resolver } from "@nestjs/graphql";
+import {
+  Args,
+  Context,
+  Info,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from "@nestjs/graphql";
+import DataLoader from "dataloader";
 import { fieldsMap } from "graphql-fields-list";
-import { ItemTypes, QueryContainersArgs } from "../../generated/graphql";
+import * as _ from "lodash";
+import {
+  Container,
+  Item,
+  ItemTypes,
+  QueryContainersArgs,
+} from "../../generated/graphql";
 import { extractUnionTypesFromGraphqlInfo } from "../../utils/extract.union.types.from.graphql.info";
-import { isTooComplex } from "../../utils/is.too.complex.query";
+import { throwIfTooComplex } from "../../utils/is.too.complex.query";
 import { ContainerService } from "./containers.service";
-
 @Resolver("Container")
 export class ContainersResolver {
   constructor(private containersService: ContainerService) {}
 
+  @ResolveField("items")
+  async container(
+    @Info() info,
+    @Parent() container: Container,
+    @Context("itemsLoader") itemsLoader: DataLoader<string, Item[]>
+  ): Promise<Item[]> {
+    if (_.isNil(container?.id)) return [];
+    const itemTypesToFetch = extractUnionTypesFromGraphqlInfo(info).map(
+      (x) => ItemTypes[x]
+    );
+    return itemsLoader.load(container.id);
+  }
+
   @Query("containers")
   async getContainers(@Info() info, @Args() args?: QueryContainersArgs) {
-    isTooComplex(info, ["items", "container"]);
+    throwIfTooComplex(info, ["items", "container"]);
     const itemTypesToFetch = extractUnionTypesFromGraphqlInfo(
       info,
       "items"

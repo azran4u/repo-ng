@@ -130,15 +130,11 @@ input AddOfficeEquipment {
 
   # Item
   name: String
+  container_id: String
 
   # Base Entity without id
-  realityId: Int!
+  realityId: Int
   classification: ClassificationEnum
-  createdBy: String!
-  creationTime: ZonedDateTime!
-  lastUpdateTime: ZonedDateTime
-  lastUpdateBy: String
-  isDeleted: Boolean
   isClassified: Boolean
   secGroups: [String]
 }
@@ -154,7 +150,7 @@ input ContainersFilter {
 }
 
 type Mutation {
-  addOfficeEquipment(input: [AddOfficeEquipment]!): [OfficeEquipment]!
+  addOfficeEquipment(input: [AddOfficeEquipment]): [OfficeEquipment]
 }
 
 type Query {

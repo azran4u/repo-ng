@@ -3,10 +3,11 @@ import { Container, StorageLocationsEnum } from "../../generated/graphql";
 import { baseEntityDtoToBaseEntityConverter } from "../base.entity/base.entity.dto.converter";
 
 export function containerDtoToContainerConverter(dto: ContainerDto): Container {
-  return {
+  const res: Container = {
     ...baseEntityDtoToBaseEntityConverter(dto),
     __typename: "Container",
     items: undefined,
-    location: StorageLocationsEnum[dto.location],
+    location: dto.location as StorageLocationsEnum,
   };
+  return res;
 }

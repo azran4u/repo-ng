@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { GraphQLError } from "graphql";
 import * as _ from "lodash";
 import { DalService } from "../../dal/dal.service";
-import { ContainerDto, ContainerDtoWithRef } from "../../dal/dal.types";
+import { ContainerDto } from "../../dal/dal.types";
 import {
   Container,
   ItemTypes,
@@ -44,7 +44,9 @@ export class ContainerService {
         const containerDtos: ContainerDto[] = await this.dalService.knex
           .from("containers")
           .whereIn("location", byLocation);
-        const items = await this.itemsService.findAll(itemTypesToFetch);
+        const items = await this.itemsService.getItems({
+          byEntityType: itemTypesToFetch,
+        });
         const containersMap = new Map<string, Container>();
         containerDtos.map((containerDto) => {
           const container_from_map = containersMap.get(containerDto.id);

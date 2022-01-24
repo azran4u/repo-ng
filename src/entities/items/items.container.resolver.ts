@@ -1,7 +1,7 @@
 import { Context, Parent, ResolveField, Resolver } from "@nestjs/graphql";
 import DataLoader from "dataloader";
-import { Container } from "../../generated/graphql";
 import * as _ from "lodash";
+import { Container } from "../../generated/graphql";
 import {
   OfficeEquipmentWithRef,
   OfficeFurnitureWithRef,
@@ -39,6 +39,7 @@ export class OfficeEquipmentItemsContainerResolver {
     @Context("containersLoader") containersLoader: DataLoader<string, Container>
   ) {
     if (_.isNil(item.container_id)) return undefined;
-    return containersLoader.load(item.container_id);
+    const res = await containersLoader.load(item.container_id);
+    return res;
   }
 }

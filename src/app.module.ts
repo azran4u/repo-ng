@@ -1,22 +1,24 @@
 import { MiddlewareConsumer, Module } from "@nestjs/common";
-import { WinstonModule } from "nest-winston";
-import { loggerOptionsFactory } from "./logger/logger";
 import { GraphQLModule } from "@nestjs/graphql";
-import { GraphqlExtractOperationMiddleware } from "./utils/graphql-extract-operation-middlewatr";
 import { json } from "express";
-import { RequestDurationMiddleware } from "./utils/express-request-duration";
+import { GraphQLError, GraphQLFormattedError } from "graphql";
+import { WinstonModule } from "nest-winston";
+import { CommonModule } from "./common/common.module";
+import { AppConfigModule, AppConfigService } from "./config";
+import { DalModule } from "./dal/dal.module";
 import { CatsModule } from "./entities/cats/cats.module";
+import { createContainersLoader } from "./entities/container/containers.loader";
+import { ContainersModule } from "./entities/container/containers.module";
+import { ContainerService } from "./entities/container/containers.service";
+import { createItemsLoader } from "./entities/items/items.loader";
+import { ItemsModule } from "./entities/items/items.module";
+import { ItemsService } from "./entities/items/items.service";
+import { createOwnersLoader } from "./entities/owners/owners.loader";
 import { OwnersModule } from "./entities/owners/owners.module";
 import { OwnersService } from "./entities/owners/owners.service";
-import { createOwnersLoader } from "./entities/owners/owners.loader";
-import { CommonModule } from "./common/common.module";
-import { DalModule } from "./dal/dal.module";
-import { AppConfigModule, AppConfigService } from "./config";
-import { ItemsModule } from "./entities/items/items.module";
-import { ContainerService } from "./entities/container/containers.service";
-import { ContainersModule } from "./entities/container/containers.module";
-import { createContainersLoader } from "./entities/container/containers.loader";
-import { GraphQLError, GraphQLFormattedError } from "graphql";
+import { loggerOptionsFactory } from "./logger/logger";
+import { RequestDurationMiddleware } from "./utils/express-request-duration";
+import { GraphqlExtractOperationMiddleware } from "./utils/graphql-extract-operation-middlewatr";
 import { isProd } from "./utils/is.prod";
 
 @Module({
@@ -31,16 +33,18 @@ import { isProd } from "./utils/is.prod";
     CommonModule,
     DalModule,
     GraphQLModule.forRootAsync({
-      imports: [OwnersModule, ContainersModule],
+      imports: [OwnersModule, ContainersModule, ItemsModule],
       useFactory: (
         ownersService: OwnersService,
-        containerService: ContainerService
+        containerService: ContainerService,
+        itemsService: ItemsService
       ) => ({
         typePaths: ["./**/*.graphql"],
         context: () => ({
           randomValue: Math.random(),
           ownersLoader: createOwnersLoader(ownersService),
           containersLoader: createContainersLoader(containerService),
+          itemsLoader: createItemsLoader(itemsService),
         }),
         formatError: (error: GraphQLError) => {
           // don't print stacktrace in prod
@@ -53,7 +57,7 @@ import { isProd } from "./utils/is.prod";
           return graphQLFormattedError;
         },
       }),
-      inject: [OwnersService, ContainerService],
+      inject: [OwnersService, ContainerService, ItemsService],
     }),
     CatsModule,
     ItemsModule,

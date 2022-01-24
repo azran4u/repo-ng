@@ -34,15 +34,11 @@ export interface AbstractItem {
 
 export interface AddOfficeEquipment {
   classification?: InputMaybe<ClassificationEnum>;
-  createdBy: Scalars['String'];
-  creationTime: Scalars['ZonedDateTime'];
+  container_id?: InputMaybe<Scalars['String']>;
   isClassified?: InputMaybe<Scalars['Boolean']>;
-  isDeleted?: InputMaybe<Scalars['Boolean']>;
   isFragile?: InputMaybe<Scalars['Boolean']>;
-  lastUpdateBy?: InputMaybe<Scalars['String']>;
-  lastUpdateTime?: InputMaybe<Scalars['ZonedDateTime']>;
   name?: InputMaybe<Scalars['String']>;
-  realityId: Scalars['Int'];
+  realityId?: InputMaybe<Scalars['Int']>;
   secGroups?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 }
 
@@ -120,13 +116,13 @@ export enum ItemTypes {
 
 export interface Mutation {
   __typename?: 'Mutation';
-  addOfficeEquipment: Array<Maybe<OfficeEquipment>>;
+  addOfficeEquipment?: Maybe<Array<Maybe<OfficeEquipment>>>;
   createCat?: Maybe<Array<Maybe<Cat>>>;
 }
 
 
 export interface MutationAddOfficeEquipmentArgs {
-  input: Array<InputMaybe<AddOfficeEquipment>>;
+  input?: InputMaybe<Array<InputMaybe<AddOfficeEquipment>>>;
 }
 
 
@@ -407,7 +403,7 @@ export type ItemResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  addOfficeEquipment?: Resolver<Array<Maybe<ResolversTypes['OfficeEquipment']>>, ParentType, ContextType, RequireFields<MutationAddOfficeEquipmentArgs, 'input'>>;
+  addOfficeEquipment?: Resolver<Maybe<Array<Maybe<ResolversTypes['OfficeEquipment']>>>, ParentType, ContextType, RequireFields<MutationAddOfficeEquipmentArgs, never>>;
   createCat?: Resolver<Maybe<Array<Maybe<ResolversTypes['Cat']>>>, ParentType, ContextType, RequireFields<MutationCreateCatArgs, never>>;
 };
 
