@@ -39,7 +39,6 @@ export class OfficeEquipmentItemsContainerResolver {
     @Context("containersLoader") containersLoader: DataLoader<string, Container>
   ) {
     if (_.isNil(item.container_id)) return undefined;
-    const res = await containersLoader.load(item.container_id);
-    return res;
+    return containersLoader.load(item.container_id);
   }
 }

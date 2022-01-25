@@ -114,10 +114,16 @@ export enum ItemTypes {
   Software = 'SOFTWARE'
 }
 
+export interface MoveItem {
+  container_id?: InputMaybe<Scalars['String']>;
+  item_id?: InputMaybe<Scalars['String']>;
+}
+
 export interface Mutation {
   __typename?: 'Mutation';
   addOfficeEquipment?: Maybe<Array<Maybe<OfficeEquipment>>>;
   createCat?: Maybe<Array<Maybe<Cat>>>;
+  moveItems?: Maybe<Array<Maybe<Item>>>;
 }
 
 
@@ -128,6 +134,11 @@ export interface MutationAddOfficeEquipmentArgs {
 
 export interface MutationCreateCatArgs {
   createCatInput?: InputMaybe<Array<InputMaybe<CreateCatInput>>>;
+}
+
+
+export interface MutationMoveItemsArgs {
+  input?: InputMaybe<Array<InputMaybe<MoveItem>>>;
 }
 
 export interface OfficeEquipment extends AbstractItem {
@@ -302,6 +313,7 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Item: ResolversTypes['OfficeEquipment'] | ResolversTypes['OfficeFurniture'] | ResolversTypes['Software'];
   ItemTypes: ItemTypes;
+  MoveItem: MoveItem;
   Mutation: ResolverTypeWrapper<{}>;
   OfficeEquipment: ResolverTypeWrapper<OfficeEquipment>;
   OfficeFurniture: ResolverTypeWrapper<OfficeFurniture>;
@@ -328,6 +340,7 @@ export type ResolversParentTypes = {
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   Item: ResolversParentTypes['OfficeEquipment'] | ResolversParentTypes['OfficeFurniture'] | ResolversParentTypes['Software'];
+  MoveItem: MoveItem;
   Mutation: {};
   OfficeEquipment: OfficeEquipment;
   OfficeFurniture: OfficeFurniture;
@@ -405,6 +418,7 @@ export type ItemResolvers<ContextType = any, ParentType extends ResolversParentT
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addOfficeEquipment?: Resolver<Maybe<Array<Maybe<ResolversTypes['OfficeEquipment']>>>, ParentType, ContextType, RequireFields<MutationAddOfficeEquipmentArgs, never>>;
   createCat?: Resolver<Maybe<Array<Maybe<ResolversTypes['Cat']>>>, ParentType, ContextType, RequireFields<MutationCreateCatArgs, never>>;
+  moveItems?: Resolver<Maybe<Array<Maybe<ResolversTypes['Item']>>>, ParentType, ContextType, RequireFields<MutationMoveItemsArgs, never>>;
 };
 
 export type OfficeEquipmentResolvers<ContextType = any, ParentType extends ResolversParentTypes['OfficeEquipment'] = ResolversParentTypes['OfficeEquipment']> = {

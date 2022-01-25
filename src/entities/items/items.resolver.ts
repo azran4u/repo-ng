@@ -11,10 +11,12 @@ import {
   AddOfficeEquipment,
   Item,
   ItemTypes,
+  MoveItem,
   OfficeEquipment,
 } from "../../generated/graphql";
 import { extractUnionTypesFromGraphqlInfo } from "../../utils/extract.union.types.from.graphql.info";
 import { throwIfTooComplex } from "../../utils/is.too.complex.query";
+import { ItemWithRef } from "./item.with.references";
 import { ItemsService } from "./items.service";
 
 @Resolver("Item")
@@ -45,5 +47,18 @@ export class ItemsResolver {
   ): Promise<OfficeEquipment[]> {
     throwIfTooComplex(info, ["container", "items"]);
     return this.itemsService.addOfficeEquipment(args.input);
+  }
+
+  @Mutation("moveItems")
+  async moveItems(
+    @Args() args: { input: MoveItem[] },
+    @Info() info: any,
+    @RealityId() realityId: string
+  ): Promise<ItemWithRef[]> {
+    throwIfTooComplex(info, ["container", "items"]);
+    const types: ItemTypes[] = extractUnionTypesFromGraphqlInfo(info).map(
+      (x) => ItemTypes[x]
+    );
+    return this.itemsService.moveItems(args.input, { byEntityType: types });
   }
 }

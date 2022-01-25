@@ -14,8 +14,7 @@ export function createContainersLoader(containerService: ContainerService) {
     return ids.map((id) => {
       const value = containersMap[id];
       if (!value) return null;
-      const res = containerDtoToContainerConverter(value);
-      return res;
+      return containerDtoToContainerConverter(value);
     });
   });
 }

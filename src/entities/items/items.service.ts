@@ -1,4 +1,6 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { GraphQLError } from "graphql";
+import Joi from "joi";
 import { Knex } from "knex";
 import { v4 as uuidv4 } from "uuid";
 import { DalService } from "../../dal/dal.service";
@@ -15,7 +17,9 @@ import {
   AddOfficeEquipment,
   ClassificationEnum,
   ItemTypes,
+  MoveItem,
 } from "../../generated/graphql";
+import { knexBatchUpdate } from "../../utils/knex.batch.update";
 import { ItemWithRef, OfficeEquipmentWithRef } from "./item.with.references";
 import {
   officeEquipmentItemDtoToOfficeEquipmentItemConverter,
@@ -25,6 +29,7 @@ import {
 export interface ItemsFilter {
   byEntityType?: ItemTypes[];
   byContainerIds?: readonly string[];
+  byItemIds?: readonly string[];
 }
 @Injectable()
 export class ItemsService {
@@ -74,13 +79,19 @@ export class ItemsService {
     }
   }
 
-  async getSoftwareItems(filter?: Pick<ItemsFilter, "byContainerIds">) {
+  async getSoftwareItems(
+    filter?: Pick<ItemsFilter, "byContainerIds" | "byItemIds">
+  ) {
     const query = this.knex
       .from("software")
       .innerJoin("items", "software.item_id", "items.id");
 
     if (filter?.byContainerIds) {
       query.whereIn("items.container_id", filter.byContainerIds);
+    }
+
+    if (filter?.byItemIds) {
+      query.whereIn("items.id", filter.byItemIds);
     }
 
     const softwareItemsDtos: SoftwareItemDto[] = await query;
@@ -91,7 +102,9 @@ export class ItemsService {
     return softwareItems?.length > 0 ? softwareItems : [];
   }
 
-  async getOfficeFurnitureItems(filter?: Pick<ItemsFilter, "byContainerIds">) {
+  async getOfficeFurnitureItems(
+    filter?: Pick<ItemsFilter, "byContainerIds" | "byItemIds">
+  ) {
     const query = this.knex
       .from("office_forniture")
       .innerJoin("items", "office_forniture.item_id", "items.id");
@@ -100,6 +113,9 @@ export class ItemsService {
       query.whereIn("items.container_id", filter.byContainerIds);
     }
 
+    if (filter?.byItemIds) {
+      query.whereIn("items.id", filter.byItemIds);
+    }
     const officeFurnitureItemDtos: OfficeFurnitureItemDto[] = await query;
 
     const officeFurnitureItems = officeFurnitureItemDtos.map((dto) =>
@@ -108,7 +124,9 @@ export class ItemsService {
     return officeFurnitureItems?.length > 0 ? officeFurnitureItems : [];
   }
 
-  async getOfficeEquipmentItems(filter?: Pick<ItemsFilter, "byContainerIds">) {
+  async getOfficeEquipmentItems(
+    filter?: Pick<ItemsFilter, "byContainerIds" | "byItemIds">
+  ) {
     const query = this.knex
       .from("office_equipment")
       .innerJoin("items", "office_equipment.item_id", "items.id");
@@ -117,6 +135,9 @@ export class ItemsService {
       query.whereIn("items.container_id", filter.byContainerIds);
     }
 
+    if (filter?.byItemIds) {
+      query.whereIn("items.id", filter.byItemIds);
+    }
     const officeEquipmentItemDtos: OfficeEquipmentItemDto[] = await query;
 
     const officeEquipmentItems = officeEquipmentItemDtos.map((dto) =>
@@ -129,14 +150,28 @@ export class ItemsService {
   async addOfficeEquipment(
     input: AddOfficeEquipment[]
   ): Promise<OfficeEquipmentWithRef[]> {
-    // validate the input
-    // start transaction
-    // create items
-    //    convert input field names to database
-    // create software with item_id reference
-    //    convert input field names to database
-
     if (!input) return [];
+
+    const validationResult = Joi.array()
+      .items(
+        Joi.object().keys({
+          classification: Joi.string().valid(
+            ...Object.values(ClassificationEnum)
+          ),
+          container_id: Joi.string(),
+          isClassified: Joi.boolean(),
+          isFragile: Joi.boolean(),
+          name: Joi.string(),
+          realityId: Joi.number().required(),
+          secGroups: Joi.array().items(Joi.string()),
+        })
+      )
+      .validate(input);
+    if (validationResult.error) {
+      throw new GraphQLError(
+        `addOfficeEquipment input validation failed ${validationResult.error}`
+      );
+    }
 
     const createOfficeEquipmentDtos: CreateOfficeEquipmentDto[] = [];
     const createItemDtos: CreateItemDto[] = [];
@@ -160,10 +195,6 @@ export class ItemsService {
       createItemDtos.push(itemDto);
       createOfficeEquipmentDtos.push(officeEquipmentDto);
     });
-
-    // split the input for both tables
-    // start transaction and insert to software and items tables
-    // convert the response to OfficeEquipment[]
 
     let transaction: Knex.Transaction<any, any[]>;
     try {
@@ -200,5 +231,43 @@ export class ItemsService {
     }
 
     return [];
+  }
+
+  async moveItems(
+    input: MoveItem[],
+    entityTypes?: Pick<ItemsFilter, "byEntityType">
+  ): Promise<ItemWithRef[]> {
+    if (!input) return [];
+
+    const validationResult = Joi.array()
+      .items(
+        Joi.object().keys({
+          item_id: Joi.string().required(),
+          container_id: Joi.string().required(),
+        })
+      )
+      .validate(input);
+    if (validationResult.error) {
+      throw new GraphQLError(
+        `moveSoftwareItem input validation failed ${validationResult.error}`
+      );
+    }
+
+    try {
+      await knexBatchUpdate(
+        this.knex,
+        "items",
+        "id",
+        input.map((x) => {
+          return { id: x.item_id, container_id: x.container_id };
+        })
+      );
+      return this.getItems({
+        byEntityType: entityTypes.byEntityType,
+        byItemIds: input.map((x) => x.item_id),
+      });
+    } catch (error) {
+      throw new GraphQLError(`moveSoftwareItem failed ${error}`);
+    }
   }
 }
