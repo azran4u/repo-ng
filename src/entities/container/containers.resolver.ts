@@ -62,6 +62,6 @@ export class ContainersResolver {
   @Query("containers")
   async getContainers(@Info() info, @Args() args?: QueryContainersArgs) {
     throwIfTooComplex(info, ["items", "container"]);
-    return this.containersService.findAllByFilter(args.filter.byLocation);
+    return this.containersService.getByFilter(args.filter);
   }
 }

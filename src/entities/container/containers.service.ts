@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import * as _ from "lodash";
 import { DalService } from "../../dal/dal.service";
 import { ContainerDto } from "../../dal/dal.types";
-import { Container, StorageLocationsEnum } from "../../generated/graphql";
+import { Container, ContainersFilter } from "../../generated/graphql";
 import { ItemsService } from "../items/items.service";
 import { containerDtoToContainerConverter } from "./container.dto.converter";
 
@@ -13,7 +13,7 @@ export class ContainerService {
     private itemsService: ItemsService
   ) {}
 
-  async findByIds(ids: readonly string[]): Promise<ContainerDto[]> {
+  async getByIds(ids: readonly string[]): Promise<ContainerDto[]> {
     if (_.isEmpty(ids)) return [];
 
     try {
@@ -29,18 +29,15 @@ export class ContainerService {
       );
     }
   }
-  async findAllByFilter(
-    byLocation?: StorageLocationsEnum[]
-  ): Promise<Container[]> {
+  async getByFilter(filter?: ContainersFilter): Promise<Container[]> {
     try {
-      const locations = byLocation ?? [
-        StorageLocationsEnum.Center,
-        StorageLocationsEnum.North,
-        StorageLocationsEnum.South,
-      ];
-      const containerDtos: ContainerDto[] = await this.dalService.knex
-        .from("containers")
-        .whereIn("location", locations);
+      const query = this.dalService.knex.from("containers");
+
+      if (filter?.byLocation) {
+        query.whereIn("location", filter.byLocation);
+      }
+
+      const containerDtos: ContainerDto[] = await query;
 
       if (_.isNil(containerDtos)) return [];
 

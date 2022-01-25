@@ -6,7 +6,7 @@ import { ContainerService } from "./containers.service";
 
 export function createContainersLoader(containerService: ContainerService) {
   return new DataLoader<string, Container>(async (ids) => {
-    const containers = await containerService.findByIds(ids);
+    const containers = await containerService.getByIds(ids);
     const containersMap = mapFromArray(
       containers,
       (container) => container?.id
