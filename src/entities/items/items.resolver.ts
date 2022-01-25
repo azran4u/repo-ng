@@ -13,6 +13,7 @@ import {
   ItemTypes,
   MoveItem,
   OfficeEquipment,
+  RemoveItems,
 } from "../../generated/graphql";
 import { extractUnionTypesFromGraphqlInfo } from "../../utils/extract.union.types.from.graphql.info";
 import { throwIfTooComplex } from "../../utils/is.too.complex.query";
@@ -60,5 +61,14 @@ export class ItemsResolver {
       (x) => ItemTypes[x]
     );
     return this.itemsService.moveItems(args.input, { byEntityType: types });
+  }
+
+  @Mutation("removeItems")
+  async removeItems(
+    @Args() args: { input: RemoveItems },
+    @Info() info: any,
+    @RealityId() realityId: string
+  ): Promise<string[]> {
+    return this.itemsService.removeItems(args.input);
   }
 }

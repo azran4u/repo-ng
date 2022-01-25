@@ -144,6 +144,11 @@ input MoveItem {
   container_id: String
 }
 
+input RemoveItems {
+  ids: [String!]!
+  allowPartialDelete: Boolean
+}
+
 enum ItemTypes {
   SOFTWARE
   OFFICE_EQUIPMENT
@@ -157,6 +162,7 @@ input ContainersFilter {
 type Mutation {
   addOfficeEquipment(input: [AddOfficeEquipment]): [OfficeEquipment]
   moveItems(input: [MoveItem]): [Item]
+  removeItems(input: RemoveItems): [String]
 }
 
 type Query {

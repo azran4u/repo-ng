@@ -33,22 +33,41 @@ export async function up(knex: Knex): Promise<void> {
     })
     .createTable("items", (table) => {
       baseEntity(table, knex);
-      table.uuid("container_id").references("containers.id").notNullable();
+      table
+        .uuid("container_id")
+        .references("containers.id")
+        .notNullable()
+        .onDelete("cascade");
       table.string("name").notNullable();
       table.index("name", undefined, "btree");
     })
     .createTable("office_equipment", (table) => {
-      table.uuid("item_id").primary().references("items.id").notNullable();
+      table
+        .uuid("item_id")
+        .primary()
+        .references("items.id")
+        .notNullable()
+        .onDelete("cascade");
       table.boolean("is_fragile");
       table.index("is_fragile", undefined, "btree");
     })
     .createTable("software", (table) => {
-      table.uuid("item_id").primary().references("items.id").notNullable();
+      table
+        .uuid("item_id")
+        .primary()
+        .references("items.id")
+        .notNullable()
+        .onDelete("cascade");
       table.boolean("is_open_source");
       table.index("is_open_source", undefined, "btree");
     })
     .createTable("office_forniture", (table) => {
-      table.uuid("item_id").primary().references("items.id").notNullable();
+      table
+        .uuid("item_id")
+        .primary()
+        .references("items.id")
+        .notNullable()
+        .onDelete("cascade");
       table.boolean("is_wood");
       table.index("is_wood", undefined, "btree");
     });
@@ -56,12 +75,12 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
   return knex.schema
-    .dropTableIfExists("containers")
-    .dropTableIfExists("storage_locations_enum")
     .dropTableIfExists("office_equipment")
     .dropTableIfExists("software")
     .dropTableIfExists("office_forniture")
     .dropTableIfExists("items")
+    .dropTableIfExists("containers")
+    .dropTableIfExists("storage_locations_enum")
     .dropTableIfExists("classification_enum");
 }
 

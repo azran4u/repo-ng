@@ -124,6 +124,7 @@ export interface Mutation {
   addOfficeEquipment?: Maybe<Array<Maybe<OfficeEquipment>>>;
   createCat?: Maybe<Array<Maybe<Cat>>>;
   moveItems?: Maybe<Array<Maybe<Item>>>;
+  removeItems?: Maybe<Array<Maybe<Scalars['String']>>>;
 }
 
 
@@ -139,6 +140,11 @@ export interface MutationCreateCatArgs {
 
 export interface MutationMoveItemsArgs {
   input?: InputMaybe<Array<InputMaybe<MoveItem>>>;
+}
+
+
+export interface MutationRemoveItemsArgs {
+  input?: InputMaybe<RemoveItems>;
 }
 
 export interface OfficeEquipment extends AbstractItem {
@@ -199,6 +205,11 @@ export interface QueryCatArgs {
 
 export interface QueryContainersArgs {
   filter?: InputMaybe<ContainersFilter>;
+}
+
+export interface RemoveItems {
+  allowPartialDelete?: InputMaybe<Scalars['Boolean']>;
+  ids: Array<Scalars['String']>;
 }
 
 export interface Software extends AbstractItem {
@@ -319,6 +330,7 @@ export type ResolversTypes = {
   OfficeFurniture: ResolverTypeWrapper<OfficeFurniture>;
   Owner: ResolverTypeWrapper<Owner>;
   Query: ResolverTypeWrapper<{}>;
+  RemoveItems: RemoveItems;
   Software: ResolverTypeWrapper<Software>;
   StorageLocationsEnum: StorageLocationsEnum;
   String: ResolverTypeWrapper<Scalars['String']>;
@@ -346,6 +358,7 @@ export type ResolversParentTypes = {
   OfficeFurniture: OfficeFurniture;
   Owner: Owner;
   Query: {};
+  RemoveItems: RemoveItems;
   Software: Software;
   String: Scalars['String'];
   Subscription: {};
@@ -419,6 +432,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   addOfficeEquipment?: Resolver<Maybe<Array<Maybe<ResolversTypes['OfficeEquipment']>>>, ParentType, ContextType, RequireFields<MutationAddOfficeEquipmentArgs, never>>;
   createCat?: Resolver<Maybe<Array<Maybe<ResolversTypes['Cat']>>>, ParentType, ContextType, RequireFields<MutationCreateCatArgs, never>>;
   moveItems?: Resolver<Maybe<Array<Maybe<ResolversTypes['Item']>>>, ParentType, ContextType, RequireFields<MutationMoveItemsArgs, never>>;
+  removeItems?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType, RequireFields<MutationRemoveItemsArgs, never>>;
 };
 
 export type OfficeEquipmentResolvers<ContextType = any, ParentType extends ResolversParentTypes['OfficeEquipment'] = ResolversParentTypes['OfficeEquipment']> = {

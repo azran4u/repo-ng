@@ -18,6 +18,7 @@ import {
   ClassificationEnum,
   ItemTypes,
   MoveItem,
+  RemoveItems,
 } from "../../generated/graphql";
 import { knexBatchUpdate } from "../../utils/knex.batch.update";
 import { ItemWithRef, OfficeEquipmentWithRef } from "./item.with.references";
@@ -249,7 +250,7 @@ export class ItemsService {
       .validate(input);
     if (validationResult.error) {
       throw new GraphQLError(
-        `moveSoftwareItem input validation failed ${validationResult.error}`
+        `moveItems input validation failed ${validationResult.error}`
       );
     }
 
@@ -267,7 +268,41 @@ export class ItemsService {
         byItemIds: input.map((x) => x.item_id),
       });
     } catch (error) {
-      throw new GraphQLError(`moveSoftwareItem failed ${error}`);
+      throw new GraphQLError(`moveItems failed ${error}`);
+    }
+  }
+
+  async removeItems(input: RemoveItems): Promise<string[]> {
+    if (!input) false;
+
+    const validationResult = Joi.object()
+      .keys({
+        ids: Joi.array().items(Joi.string().required()).required(),
+        allowPartialDelete: Joi.boolean(),
+      })
+      .validate(input);
+    if (validationResult.error) {
+      throw new GraphQLError(
+        `removeItems input validation failed ${validationResult.error}`
+      );
+    }
+
+    try {
+      const trx = await this.knex.transaction();
+      const res = await this.knex("items")
+        .whereIn("id", input.ids)
+        .del()
+        .returning("id")
+        .transacting(trx);
+      if (res.length === input.ids.length || input.allowPartialDelete) {
+        await trx.commit();
+        return res;
+      } else {
+        await trx.rollback();
+        return [];
+      }
+    } catch (error) {
+      throw new GraphQLError(`removeItems failed ${error}`);
     }
   }
 }
