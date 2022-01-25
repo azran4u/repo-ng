@@ -40,14 +40,14 @@ export class ItemsService {
       itemType: ItemTypes;
       fn: () => Promise<ItemWithRef[]>;
     }[] = [
-      { itemType: ItemTypes.Software, fn: () => this.getAllSoftware(filter) },
+      { itemType: ItemTypes.Software, fn: () => this.getSoftwareItems(filter) },
       {
         itemType: ItemTypes.OfficeFurniture,
-        fn: () => this.getAllOfficeFurniture(filter),
+        fn: () => this.getOfficeFurnitureItems(filter),
       },
       {
         itemType: ItemTypes.OfficeEquipment,
-        fn: () => this.getAllOfficeEquipment(filter),
+        fn: () => this.getOfficeEquipmentItems(filter),
       },
     ];
 
@@ -74,7 +74,7 @@ export class ItemsService {
     }
   }
 
-  private async getAllSoftware(filter?: Pick<ItemsFilter, "byContainerIds">) {
+  async getSoftwareItems(filter?: Pick<ItemsFilter, "byContainerIds">) {
     const query = this.knex
       .from("software")
       .innerJoin("items", "software.item_id", "items.id");
@@ -91,9 +91,7 @@ export class ItemsService {
     return softwareItems?.length > 0 ? softwareItems : [];
   }
 
-  private async getAllOfficeFurniture(
-    filter?: Pick<ItemsFilter, "byContainerIds">
-  ) {
+  async getOfficeFurnitureItems(filter?: Pick<ItemsFilter, "byContainerIds">) {
     const query = this.knex
       .from("office_forniture")
       .innerJoin("items", "office_forniture.item_id", "items.id");
@@ -110,9 +108,7 @@ export class ItemsService {
     return officeFurnitureItems?.length > 0 ? officeFurnitureItems : [];
   }
 
-  private async getAllOfficeEquipment(
-    filter?: Pick<ItemsFilter, "byContainerIds">
-  ) {
+  async getOfficeEquipmentItems(filter?: Pick<ItemsFilter, "byContainerIds">) {
     const query = this.knex
       .from("office_equipment")
       .innerJoin("items", "office_equipment.item_id", "items.id");

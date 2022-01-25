@@ -28,10 +28,10 @@ export class ItemsResolver {
 
   @Query("items")
   async getItems(@Info() info: any, @RealityId() realityId: string) {
+    throwIfTooComplex(info, ["container", "items"]);
     const types = extractUnionTypesFromGraphqlInfo(info).map(
       (x) => ItemTypes[x]
     );
-    throwIfTooComplex(info, ["container", "items"]);
     return this.itemsService.getItems({
       byEntityType: types,
     });

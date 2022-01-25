@@ -10,7 +10,12 @@ import { CatsModule } from "./entities/cats/cats.module";
 import { createContainersLoader } from "./entities/container/containers.loader";
 import { ContainersModule } from "./entities/container/containers.module";
 import { ContainerService } from "./entities/container/containers.service";
-import { createItemsLoader } from "./entities/items/items.loader";
+import {
+  createItemsLoader,
+  createOfficeEquipmentItemsLoader,
+  createOfficeFurnitureItemsLoader,
+  createSoftwareItemsLoader,
+} from "./entities/items/items.loader";
 import { ItemsModule } from "./entities/items/items.module";
 import { ItemsService } from "./entities/items/items.service";
 import { createOwnersLoader } from "./entities/owners/owners.loader";
@@ -45,6 +50,11 @@ import { isProd } from "./utils/is.prod";
           ownersLoader: createOwnersLoader(ownersService),
           containersLoader: createContainersLoader(containerService),
           itemsLoader: createItemsLoader(itemsService),
+          softwareItemsLoader: createSoftwareItemsLoader(itemsService),
+          officeEquipmentItemsLoader:
+            createOfficeEquipmentItemsLoader(itemsService),
+          officeFurnitureItemsLoader:
+            createOfficeFurnitureItemsLoader(itemsService),
         }),
         formatError: (error: GraphQLError) => {
           // don't print stacktrace in prod
