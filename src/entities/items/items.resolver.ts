@@ -63,7 +63,10 @@ export class ItemsResolver {
     return this.itemsService.moveItems(args.input, { byEntityType: types });
   }
 
-  @Mutation("removeItems")
+  @Mutation((returns) => [String], {
+    name: "removeItems",
+    description: `returns succesesfully deleted id's`,
+  })
   async removeItems(
     @Args() args: { input: RemoveItems },
     @Info() info: any,

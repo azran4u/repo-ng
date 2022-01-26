@@ -1,5 +1,6 @@
 import { ConfigFactory } from "@nestjs/config";
 import { parseInt } from "lodash";
+import { envToBooleanWIthDefault } from "../utils/string.to.boolean.with.default";
 
 export const configFactory: ConfigFactory<{ config: Configuration }> = () => {
   return {
@@ -19,6 +20,18 @@ export const configFactory: ConfigFactory<{ config: Configuration }> = () => {
         logging: {
           everySql: envToBooleanWIthDefault("KNEX_LOGGING_EVERY_SQL", true),
           bindings: envToBooleanWIthDefault("KNEX_LOGGING_BINDING", true),
+        },
+      },
+      repo: {
+        deletions: {
+          logicalDelete: envToBooleanWIthDefault(
+            "REPO_DELETIONS_LOGICAL_DELETE",
+            true
+          ),
+          allowPartialDelete: envToBooleanWIthDefault(
+            "REPO_DELETIONS_ALLOW_PARTIAL_DELETE",
+            true
+          ),
         },
       },
     },
@@ -44,10 +57,18 @@ export interface KnexConfig {
   };
 }
 
+export interface RepoConfig {
+  deletions: {
+    logicalDelete: boolean;
+    allowPartialDelete: boolean;
+  };
+}
+
 export interface Configuration {
   server: ServerConfig;
   logger: LoggerConfig;
   kenx: KnexConfig;
+  repo: RepoConfig;
 }
 
 function envToNumberOrDefault(env: string, defaultValue: number): number {
@@ -61,10 +82,4 @@ function envToStringOrDefault(env: string, defaultValue: string): string {
   const value = process.env[env];
   if (!value) return defaultValue;
   return value;
-}
-
-function envToBooleanWIthDefault(env: string, defaultValue: boolean): boolean {
-  const value = process.env[env];
-  if (!value) return defaultValue;
-  return value === "true" ? true : false;
 }

@@ -146,6 +146,11 @@ input MoveItem {
 
 input RemoveItems {
   ids: [String!]!
+  """
+  When some of the input ID's cannot be deleted (such that they don't exists, etc.):
+  When set to TRUE, delets what possible, if FALSE delets nothing.
+  Default: TRUE
+  """
   allowPartialDelete: Boolean
 }
 
@@ -162,6 +167,9 @@ input ContainersFilter {
 type Mutation {
   addOfficeEquipment(input: [AddOfficeEquipment]): [OfficeEquipment]
   moveItems(input: [MoveItem]): [Item]
+  """
+  Returns the ID's that were deleted succesfully
+  """
   removeItems(input: RemoveItems): [String]
 }
 

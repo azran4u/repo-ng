@@ -3,6 +3,8 @@ import { GraphQLError } from "graphql";
 import Joi from "joi";
 import { Knex } from "knex";
 import { v4 as uuidv4 } from "uuid";
+import { Configuration } from "../../config";
+import { AppConfigService } from "../../config/app.config.service";
 import { DalService } from "../../dal/dal.service";
 import {
   CreateItemDto,
@@ -35,8 +37,13 @@ export interface ItemsFilter {
 @Injectable()
 export class ItemsService {
   private knex: Knex;
-  constructor(private dalService: DalService) {
+  private config: Configuration;
+  constructor(
+    private dalService: DalService,
+    private configService: AppConfigService
+  ) {
     this.knex = this.dalService.knex;
+    this.config = this.configService.getConfig();
   }
 
   async getItems(filter: ItemsFilter): Promise<ItemWithRef[]> {
@@ -288,13 +295,19 @@ export class ItemsService {
     }
 
     try {
+      const query = this.knex("items").whereIn("id", input.ids).returning("id");
+
+      if (this.config.repo.deletions.logicalDelete) {
+        query.update("is_deleted", true);
+      } else {
+        query.del();
+      }
       const trx = await this.knex.transaction();
-      const res = await this.knex("items")
-        .whereIn("id", input.ids)
-        .del()
-        .returning("id")
-        .transacting(trx);
-      if (res.length === input.ids.length || input.allowPartialDelete) {
+      const res = await query.transacting(trx);
+      const allowPartialDelete =
+        this.config.repo.deletions.allowPartialDelete &&
+        input.allowPartialDelete;
+      if (res.length === input.ids.length || allowPartialDelete) {
         await trx.commit();
         return res;
       } else {
