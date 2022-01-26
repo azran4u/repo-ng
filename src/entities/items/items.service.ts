@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { GraphQLError } from "graphql";
 import Joi from "joi";
 import { Knex } from "knex";
+import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 import { Configuration } from "../../config";
 import { AppConfigService } from "../../config/app.config.service";
@@ -12,15 +13,16 @@ import {
   ItemDto,
   OfficeEquipmentItemDto,
   OfficeEquipmentItemFieldsDto,
+  OfficeEquipmentItemOwnFieldsDto,
   OfficeFurnitureItemDto,
   SoftwareItemDto,
 } from "../../dal/dal.types";
 import {
-  AddOfficeEquipment,
   ClassificationEnum,
   ItemTypes,
   MoveItem,
   RemoveItems,
+  UpsertOfficeEquipment,
 } from "../../generated/graphql";
 import { knexBatchUpdate } from "../../utils/knex.batch.update";
 import { ItemWithRef, OfficeEquipmentWithRef } from "./item.with.references";
@@ -155,14 +157,15 @@ export class ItemsService {
     return officeEquipmentItems?.length > 0 ? officeEquipmentItems : [];
   }
 
-  async addOfficeEquipment(
-    input: AddOfficeEquipment[]
+  async upsertOfficeEquipment(
+    input: UpsertOfficeEquipment[]
   ): Promise<OfficeEquipmentWithRef[]> {
     if (!input) return [];
 
     const validationResult = Joi.array()
       .items(
         Joi.object().keys({
+          id: Joi.string(),
           classification: Joi.string().valid(
             ...Object.values(ClassificationEnum)
           ),
@@ -170,38 +173,62 @@ export class ItemsService {
           isClassified: Joi.boolean(),
           isFragile: Joi.boolean(),
           name: Joi.string(),
-          realityId: Joi.number().required(),
+          realityId: Joi.number(),
           secGroups: Joi.array().items(Joi.string()),
         })
       )
       .validate(input);
     if (validationResult.error) {
       throw new GraphQLError(
-        `addOfficeEquipment input validation failed ${validationResult.error}`
+        `upsertOfficeEquipment input validation failed ${validationResult.error}`
       );
     }
 
-    const createOfficeEquipmentDtos: CreateOfficeEquipmentDto[] = [];
-    const createItemDtos: CreateItemDto[] = [];
+    const insertOfficeEquipmentDtos: CreateOfficeEquipmentDto[] = [];
+    const insertItemDtos: Partial<CreateItemDto>[] = [];
+    const updateOfficeEquipmentDtos: CreateOfficeEquipmentDto[] = [];
+    const updateItemDtos: Partial<CreateItemDto>[] = [];
 
     input.forEach((officeEquipment) => {
-      const itemDto: CreateItemDto = {
-        id: uuidv4(),
-        container_id: officeEquipment.container_id,
-        name: officeEquipment.name,
-        reality_id: officeEquipment.realityId ?? 1,
-        classification: officeEquipment.classification
-          ? (officeEquipment.classification as ClassificationEnum)
-          : ClassificationEnum.Unclas,
-        is_classified: officeEquipment.isClassified ?? false,
-        sec_groups: officeEquipment.secGroups ?? [],
-      };
-      const officeEquipmentDto: CreateOfficeEquipmentDto = {
-        item_id: itemDto.id,
-        is_fragile: officeEquipment.isFragile,
-      };
-      createItemDtos.push(itemDto);
-      createOfficeEquipmentDtos.push(officeEquipmentDto);
+      const itemDto = _.omitBy<CreateItemDto>(
+        {
+          id: officeEquipment.id,
+          container_id: officeEquipment.container_id,
+          name: officeEquipment.name,
+          reality_id: officeEquipment.realityId ?? undefined,
+          classification: officeEquipment.classification
+            ? (officeEquipment.classification as ClassificationEnum)
+            : ClassificationEnum.Unclas,
+          is_classified: officeEquipment.isClassified,
+          sec_groups: officeEquipment.secGroups,
+        },
+        _.isNil
+      );
+
+      function convertOfficeEquipmentFieldDto(
+        upsertOfficeEquipment: UpsertOfficeEquipment
+      ): OfficeEquipmentItemOwnFieldsDto {
+        return _.omitBy(
+          { is_fragile: upsertOfficeEquipment.isFragile },
+          _.isNil
+        );
+      }
+      if (_.isNil(itemDto?.id)) {
+        itemDto.id = uuidv4();
+        const officeEquipmentDto: CreateOfficeEquipmentDto = {
+          item_id: itemDto.id,
+          ...convertOfficeEquipmentFieldDto(officeEquipment),
+        };
+        insertItemDtos.push(itemDto);
+        insertOfficeEquipmentDtos.push(officeEquipmentDto);
+      } else {
+        const officeEquipmentDto: CreateOfficeEquipmentDto = {
+          item_id: itemDto.id,
+          ...convertOfficeEquipmentFieldDto(officeEquipment),
+        };
+        updateItemDtos.push(itemDto);
+        updateOfficeEquipmentDtos.push(officeEquipmentDto);
+      }
     });
 
     let transaction: Knex.Transaction<any, any[]>;
@@ -209,24 +236,54 @@ export class ItemsService {
       transaction = await this.knex.transaction();
     } catch (error) {
       throw new InternalServerErrorException(
-        `addOfficeEquipment failed ${error.messgae}`
+        `upsertOfficeEquipment failed ${error.messgae}`
       );
     }
 
     try {
-      const itemsDtosReturn: ItemDto[] = await this.knex("items")
-        .transacting(transaction)
-        .insert(createItemDtos)
-        .returning("*");
-      const officeEquipmentDtosReturn: OfficeEquipmentItemFieldsDto[] =
-        await this.knex("office_equipment")
+      // TODO - convert to batch insert / update
+      let insertItemsDtosReturn: ItemDto[];
+      if (!_.isEmpty(insertItemDtos)) {
+        insertItemsDtosReturn = await this.knex("items")
           .transacting(transaction)
-          .insert(createOfficeEquipmentDtos)
+          .insert(insertItemDtos)
           .returning("*");
+      }
+
+      let insertOfficeEquipmentDtosReturn: OfficeEquipmentItemFieldsDto[];
+      if (!_.isEmpty(insertOfficeEquipmentDtos)) {
+        insertOfficeEquipmentDtosReturn = await this.knex("office_equipment")
+          .transacting(transaction)
+          .insert(insertOfficeEquipmentDtos)
+          .returning("*");
+      }
+
+      let updateItemsDtosReturn: ItemDto[];
+      if (!_.isEmpty(updateItemDtos)) {
+        updateItemsDtosReturn = await this.knex("items")
+          .transacting(transaction)
+          .update(updateItemDtos)
+          .where("id")
+          .returning("*");
+      }
+
+      let updateOfficeEquipmentDtosReturn: OfficeEquipmentItemFieldsDto[];
+      if (!_.isEmpty(updateItemDtos)) {
+        updateOfficeEquipmentDtosReturn = await this.knex("office_equipment")
+          .transacting(transaction)
+          .update(updateOfficeEquipmentDtos)
+          .returning("*");
+      }
+
       const itemsDtosReturnMap = new Map<string, ItemDto>();
-      itemsDtosReturn.forEach((x) => itemsDtosReturnMap.set(x.id, x));
+      [...insertItemsDtosReturn, ...updateItemsDtosReturn].forEach((x) =>
+        itemsDtosReturnMap.set(x.id, x)
+      );
       await transaction.commit();
-      return officeEquipmentDtosReturn.map((x) => {
+      return [
+        ...insertOfficeEquipmentDtosReturn,
+        ...updateOfficeEquipmentDtosReturn,
+      ].map((x) => {
         return {
           ...officeEquipmentItemDtoToOfficeEquipmentItemConverter({
             ...x,
@@ -236,9 +293,8 @@ export class ItemsService {
       });
     } catch (error) {
       await transaction.rollback();
+      throw new GraphQLError(`upsertOfficeEquipment failed ${error.messgae}`);
     }
-
-    return [];
   }
 
   async moveItems(

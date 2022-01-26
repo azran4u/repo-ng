@@ -32,16 +32,6 @@ export interface AbstractItem {
   secGroups?: Maybe<Array<Maybe<Scalars['String']>>>;
 }
 
-export interface AddOfficeEquipment {
-  classification?: InputMaybe<ClassificationEnum>;
-  container_id?: InputMaybe<Scalars['String']>;
-  isClassified?: InputMaybe<Scalars['Boolean']>;
-  isFragile?: InputMaybe<Scalars['Boolean']>;
-  name?: InputMaybe<Scalars['String']>;
-  realityId?: InputMaybe<Scalars['Int']>;
-  secGroups?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-}
-
 export interface BaseEntity {
   classification?: Maybe<ClassificationEnum>;
   createdBy: Scalars['String'];
@@ -121,15 +111,16 @@ export interface MoveItem {
 
 export interface Mutation {
   __typename?: 'Mutation';
-  addOfficeEquipment?: Maybe<Array<Maybe<OfficeEquipment>>>;
   createCat?: Maybe<Array<Maybe<Cat>>>;
   moveItems?: Maybe<Array<Maybe<Item>>>;
+  /** Returns the ID's that were deleted succesfully */
   removeItems?: Maybe<Array<Maybe<Scalars['String']>>>;
-}
-
-
-export interface MutationAddOfficeEquipmentArgs {
-  input?: InputMaybe<Array<InputMaybe<AddOfficeEquipment>>>;
+  /**
+   * INSERT or UPDATE OfficeEquipment.
+   * If the input object has an ID field then it's considered upsert, otherwise it's considered insert.
+   * You can do both INSERTs and UPDATEs in the same request
+   */
+  upsertOfficeEquipment?: Maybe<Array<Maybe<OfficeEquipment>>>;
 }
 
 
@@ -145,6 +136,11 @@ export interface MutationMoveItemsArgs {
 
 export interface MutationRemoveItemsArgs {
   input?: InputMaybe<RemoveItems>;
+}
+
+
+export interface MutationUpsertOfficeEquipmentArgs {
+  input?: InputMaybe<Array<InputMaybe<UpsertOfficeEquipment>>>;
 }
 
 export interface OfficeEquipment extends AbstractItem {
@@ -208,6 +204,11 @@ export interface QueryContainersArgs {
 }
 
 export interface RemoveItems {
+  /**
+   * When some of the input ID's cannot be deleted (such that they don't exists, etc.):
+   * When set to TRUE, delets what possible, if FALSE delets nothing.
+   * Default: TRUE
+   */
   allowPartialDelete?: InputMaybe<Scalars['Boolean']>;
   ids: Array<Scalars['String']>;
 }
@@ -238,6 +239,17 @@ export enum StorageLocationsEnum {
 export interface Subscription {
   __typename?: 'Subscription';
   catCreated?: Maybe<Cat>;
+}
+
+export interface UpsertOfficeEquipment {
+  classification?: InputMaybe<ClassificationEnum>;
+  container_id?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['String']>;
+  isClassified?: InputMaybe<Scalars['Boolean']>;
+  isFragile?: InputMaybe<Scalars['Boolean']>;
+  name?: InputMaybe<Scalars['String']>;
+  realityId?: InputMaybe<Scalars['Int']>;
+  secGroups?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 }
 
 
@@ -310,7 +322,6 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   AbstractItem: ResolversTypes['OfficeEquipment'] | ResolversTypes['OfficeFurniture'] | ResolversTypes['Software'];
-  AddOfficeEquipment: AddOfficeEquipment;
   BaseEntity: ResolversTypes['Container'];
   BigInt: ResolverTypeWrapper<Scalars['BigInt']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
@@ -335,13 +346,13 @@ export type ResolversTypes = {
   StorageLocationsEnum: StorageLocationsEnum;
   String: ResolverTypeWrapper<Scalars['String']>;
   Subscription: ResolverTypeWrapper<{}>;
+  UpsertOfficeEquipment: UpsertOfficeEquipment;
   ZonedDateTime: ResolverTypeWrapper<Scalars['ZonedDateTime']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   AbstractItem: ResolversParentTypes['OfficeEquipment'] | ResolversParentTypes['OfficeFurniture'] | ResolversParentTypes['Software'];
-  AddOfficeEquipment: AddOfficeEquipment;
   BaseEntity: ResolversParentTypes['Container'];
   BigInt: Scalars['BigInt'];
   Boolean: Scalars['Boolean'];
@@ -362,6 +373,7 @@ export type ResolversParentTypes = {
   Software: Software;
   String: Scalars['String'];
   Subscription: {};
+  UpsertOfficeEquipment: UpsertOfficeEquipment;
   ZonedDateTime: Scalars['ZonedDateTime'];
 };
 
@@ -429,10 +441,10 @@ export type ItemResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  addOfficeEquipment?: Resolver<Maybe<Array<Maybe<ResolversTypes['OfficeEquipment']>>>, ParentType, ContextType, RequireFields<MutationAddOfficeEquipmentArgs, never>>;
   createCat?: Resolver<Maybe<Array<Maybe<ResolversTypes['Cat']>>>, ParentType, ContextType, RequireFields<MutationCreateCatArgs, never>>;
   moveItems?: Resolver<Maybe<Array<Maybe<ResolversTypes['Item']>>>, ParentType, ContextType, RequireFields<MutationMoveItemsArgs, never>>;
   removeItems?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType, RequireFields<MutationRemoveItemsArgs, never>>;
+  upsertOfficeEquipment?: Resolver<Maybe<Array<Maybe<ResolversTypes['OfficeEquipment']>>>, ParentType, ContextType, RequireFields<MutationUpsertOfficeEquipmentArgs, never>>;
 };
 
 export type OfficeEquipmentResolvers<ContextType = any, ParentType extends ResolversParentTypes['OfficeEquipment'] = ResolversParentTypes['OfficeEquipment']> = {

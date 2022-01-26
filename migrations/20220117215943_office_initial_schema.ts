@@ -2,14 +2,14 @@ import { Knex } from "knex";
 
 function baseEntity(table: Knex.CreateTableBuilder, knex: Knex): void {
   table.uuid("id").primary().defaultTo(knex.raw("gen_random_uuid()"));
-  table.integer("reality_id").notNullable();
+  table.integer("reality_id").notNullable().defaultTo(0);
   table.string("classification").references("classification_enum.type");
   table.timestamps(true, true); // adds created_at and updated_at
-  table.string("created_by");
-  table.string("updated_by");
+  table.string("created_by").defaultTo("unknown");
+  table.string("updated_by").defaultTo("unknown");
   table.boolean("is_deleted").notNullable().defaultTo(false);
   table.boolean("is_classified").notNullable().defaultTo(false);
-  table.specificType("sec_groups", "text[]");
+  table.specificType("sec_groups", "text[]").defaultTo("{}");
   table.index("reality_id", undefined, "btree");
   table.index("classification", undefined, "btree");
   table.index("is_deleted", undefined, "btree");
@@ -48,7 +48,7 @@ export async function up(knex: Knex): Promise<void> {
         .references("items.id")
         .notNullable()
         .onDelete("cascade");
-      table.boolean("is_fragile");
+      table.boolean("is_fragile").defaultTo(false);
       table.index("is_fragile", undefined, "btree");
     })
     .createTable("software", (table) => {
@@ -58,7 +58,7 @@ export async function up(knex: Knex): Promise<void> {
         .references("items.id")
         .notNullable()
         .onDelete("cascade");
-      table.boolean("is_open_source");
+      table.boolean("is_open_source").defaultTo(false);
       table.index("is_open_source", undefined, "btree");
     })
     .createTable("office_forniture", (table) => {
@@ -68,7 +68,7 @@ export async function up(knex: Knex): Promise<void> {
         .references("items.id")
         .notNullable()
         .onDelete("cascade");
-      table.boolean("is_wood");
+      table.boolean("is_wood").defaultTo(false);
       table.index("is_wood", undefined, "btree");
     });
 }

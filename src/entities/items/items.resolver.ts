@@ -8,12 +8,12 @@ import {
 } from "@nestjs/graphql";
 import { RealityId } from "../../common/decorator/reality.id.decorator";
 import {
-  AddOfficeEquipment,
   Item,
   ItemTypes,
   MoveItem,
   OfficeEquipment,
   RemoveItems,
+  UpsertOfficeEquipment,
 } from "../../generated/graphql";
 import { extractUnionTypesFromGraphqlInfo } from "../../utils/extract.union.types.from.graphql.info";
 import { throwIfTooComplex } from "../../utils/is.too.complex.query";
@@ -40,14 +40,14 @@ export class ItemsResolver {
     });
   }
 
-  @Mutation("addOfficeEquipment")
-  async addOfficeEquipment(
-    @Args() args: { input: AddOfficeEquipment[] },
+  @Mutation("upsertOfficeEquipment")
+  async upsertOfficeEquipment(
+    @Args() args: { input: UpsertOfficeEquipment[] },
     @Info() info: any,
     @RealityId() realityId: string
   ): Promise<OfficeEquipment[]> {
     throwIfTooComplex(info, ["container", "items"]);
-    return this.itemsService.addOfficeEquipment(args.input);
+    return this.itemsService.upsertOfficeEquipment(args.input);
   }
 
   @Mutation("moveItems")

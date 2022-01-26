@@ -125,10 +125,11 @@ enum StorageLocationsEnum {
   SOUTH
 }
 
-input AddOfficeEquipment {
+input UpsertOfficeEquipment {
   isFragile: Boolean
 
   # Item
+  id: String
   name: String
   container_id: String
 
@@ -165,7 +166,12 @@ input ContainersFilter {
 }
 
 type Mutation {
-  addOfficeEquipment(input: [AddOfficeEquipment]): [OfficeEquipment]
+  """
+  INSERT or UPDATE OfficeEquipment.
+  If the input object has an ID field then it's considered UPDATE, otherwise it's considered INSERT.
+  You can do both INSERTs and UPDATEs in the same request
+  """
+  upsertOfficeEquipment(input: [UpsertOfficeEquipment]): [OfficeEquipment]
   moveItems(input: [MoveItem]): [Item]
   """
   Returns the ID's that were deleted succesfully

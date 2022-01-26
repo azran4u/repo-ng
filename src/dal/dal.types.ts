@@ -35,9 +35,12 @@ export interface OfficeFurnitureItemDto
   extends ItemDto,
     OfficeFurnitureItemFieldsDto {}
 
-export interface OfficeEquipmentItemFieldsDto extends ItemRefDto {
+export interface OfficeEquipmentItemOwnFieldsDto {
   is_fragile?: boolean;
 }
+export interface OfficeEquipmentItemFieldsDto
+  extends ItemRefDto,
+    OfficeEquipmentItemOwnFieldsDto {}
 
 export interface OfficeEquipmentItemDto
   extends ItemDto,
