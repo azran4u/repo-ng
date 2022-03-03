@@ -5,7 +5,7 @@ import { WINSTON_MODULE_PROVIDER } from "nest-winston";
 import { InjectKnex } from "nestjs-knex";
 import { Logger } from "winston";
 import { AppConfigService } from "../config/app.config.service";
-import { knexLogger } from "../utils/knexLogger";
+import { knexLogger } from "../utils/knex.logger";
 
 @Injectable()
 export class DalService {

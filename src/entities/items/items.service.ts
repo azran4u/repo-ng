@@ -24,7 +24,7 @@ import {
   RemoveItems,
   UpsertOfficeEquipment,
 } from "../../generated/graphql";
-import { knexBatchUpdate } from "../../utils/knex.batch.update";
+import { knexBatchInsertOrUpdate } from "../../utils/knex.batch.update";
 import { ItemWithRef, OfficeEquipmentWithRef } from "./item.with.references";
 import {
   officeEquipmentItemDtoToOfficeEquipmentItemConverter,
@@ -318,17 +318,18 @@ export class ItemsService {
     }
 
     try {
-      await knexBatchUpdate(
+      const res = await knexBatchInsertOrUpdate<ItemDto>(
         this.knex,
         "items",
         "id",
         input.map((x) => {
           return { id: x.item_id, container_id: x.container_id };
-        })
+        }),
+        "update"
       );
       return this.getItems({
         byEntityType: entityTypes.byEntityType,
-        byItemIds: input.map((x) => x.item_id),
+        byItemIds: res.map((x) => x.id),
       });
     } catch (error) {
       throw new GraphQLError(`moveItems failed ${error}`);

@@ -1,13 +1,13 @@
 import { Module } from "@nestjs/common";
 import { KnexModule } from "nestjs-knex";
-import { getKnexConfig } from "../../utils/getKnexConfig";
+import { knexLoadConfig } from "../../utils/knex.load.config";
 import { OwnersService } from "./owners.service";
 
 @Module({
   imports: [
     KnexModule.forRootAsync({
       useFactory: () => {
-        return { config: getKnexConfig() };
+        return { config: knexLoadConfig() };
       },
     }),
   ],

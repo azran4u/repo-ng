@@ -1,24 +1,36 @@
 import { Knex } from "knex";
+import _ from "lodash";
 
-export async function knexBatchUpdate<T = any>(
+export async function knexBatchInsertOrUpdate<T>(
   knex: Knex,
   table: string,
   column: string,
-  collection: Record<string, T>[]
-) {
+  collection: Record<string, any>[],
+  operation: "insert" | "update"
+): Promise<T[]> {
   const trx = await knex.transaction();
   try {
-    await Promise.all(
+    const res = await Promise.all(
       collection.map((tuple) => {
         const value = tuple[column];
         delete tuple[column];
-        return knex(table).where(column, value).update(tuple).transacting(trx);
+        const query = knex(table)
+          .where(column, value)
+          .returning("*")
+          .transacting(trx);
+        if (operation === "insert") {
+          query.insert(tuple);
+        }
+        if (operation === "update") {
+          query.update(tuple);
+        }
+        return query;
       })
     );
-    const res = await trx.commit().returning("*");
-    debugger;
-    return res;
+    await trx.commit();
+    return _.flatten(res);
   } catch (error) {
     await trx.rollback();
+    return [];
   }
 }
