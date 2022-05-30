@@ -43,7 +43,7 @@ export class PaginationService {
         .map((x) => x.id)
     );
 
-    let lastId: ID;
+    let lastId: ID = null;
     let lastDv = maxBy(dataIncludingDeleted, (x) => +x.dv).dv;
     if (lastDv) {
       lastId = maxBy(
