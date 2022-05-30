@@ -22,9 +22,11 @@ import { createOwnersLoader } from "./entities/owners/owners.loader";
 import { OwnersModule } from "./entities/owners/owners.module";
 import { OwnersService } from "./entities/owners/owners.service";
 import { loggerOptionsFactory } from "./logger/logger";
-import { RequestDurationMiddleware } from "./utils/express-request-duration";
-import { GraphqlExtractOperationMiddleware } from "./utils/graphql-extract-operation-middlewatr";
+import { RequestDurationMiddleware } from "./utils/express.request.duration";
+import { GraphqlExtractOperationMiddleware } from "./utils/graphql.extract.operation.middleware";
 import { isProd } from "./utils/is.prod";
+import { PaginationModule } from './pagination/pagination.module';
+import { PersistencyModule } from './persistency/persistency.module';
 
 @Module({
   imports: [
@@ -72,6 +74,8 @@ import { isProd } from "./utils/is.prod";
     CatsModule,
     ItemsModule,
     ContainersModule,
+    PaginationModule,
+    PersistencyModule,
   ],
 })
 export class AppModule {

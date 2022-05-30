@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import { WINSTON_MODULE_PROVIDER } from "nest-winston";
 import { Logger } from "winston";
 import { Configuration, LoggerConfig } from "../config/config.factory";
-import { getDurationInMilliseconds } from "./getDurationInMilliseconds";
+import { getDurationInMilliseconds } from "./get.duration.in.ms";
 import * as _ from "lodash";
 import { AppConfigService } from "../config";
 @Injectable()
