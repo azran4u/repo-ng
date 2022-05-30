@@ -43,15 +43,15 @@ export class PaginationService {
         .map((x) => x.id)
     );
 
-    let lastDv = maxBy(dataIncludingDeleted, (x) => +x.dv).dv;
     let lastId: ID;
-    if (lastDv === cursor.dv) {
+    let lastDv = maxBy(dataIncludingDeleted, (x) => +x.dv).dv;
+    if (lastDv) {
       lastId = maxBy(
-        dataIncludingDeleted.filter((x) => x.dv === cursor.dv),
+        dataIncludingDeleted.filter((x) => x.dv === lastDv),
         (x) => x.id
       ).id;
     } else {
-      lastDv = nextDv(lastDv);
+      lastDv = nextDv(cursor.dv);
       lastId = null;
     }
 
