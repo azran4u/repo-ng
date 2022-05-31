@@ -1,1 +1,1 @@
-export type DV = string;
+export type DV = number;
