@@ -1,15 +1,15 @@
-import { ConfigFactory } from "@nestjs/config";
-import { parseInt } from "lodash";
-import { envToBooleanWIthDefault } from "../utils/string.to.boolean.with.default";
+import { ConfigFactory } from '@nestjs/config';
+import { parseInt } from 'lodash';
+import { envToBooleanWIthDefault } from '../utils/string.to.boolean.with.default';
 
 export const configFactory: ConfigFactory<{ config: Configuration }> = () => {
   return {
     config: {
       server: {
-        port: envToNumberOrDefault("SERVER_PORT", 3500),
+        port: envToNumberOrDefault('SERVER_PORT', 3500),
       },
       logger: {
-        level: envToStringOrDefault("LOGGER_LEVEL", "debug"),
+        level: envToStringOrDefault('LOGGER_LEVEL', 'debug'),
         logging: {
           logGraphqlEntitiesRequests: true,
           logGraphqlIntrospectionRequests: false,
@@ -18,20 +18,26 @@ export const configFactory: ConfigFactory<{ config: Configuration }> = () => {
       },
       kenx: {
         logging: {
-          everySql: envToBooleanWIthDefault("KNEX_LOGGING_EVERY_SQL", true),
-          bindings: envToBooleanWIthDefault("KNEX_LOGGING_BINDING", true),
+          everySql: envToBooleanWIthDefault('KNEX_LOGGING_EVERY_SQL', true),
+          bindings: envToBooleanWIthDefault('KNEX_LOGGING_BINDING', true),
         },
       },
       repo: {
         deletions: {
           logicalDelete: envToBooleanWIthDefault(
-            "REPO_DELETIONS_LOGICAL_DELETE",
+            'REPO_DELETIONS_LOGICAL_DELETE',
             true
           ),
           allowPartialDelete: envToBooleanWIthDefault(
-            "REPO_DELETIONS_ALLOW_PARTIAL_DELETE",
+            'REPO_DELETIONS_ALLOW_PARTIAL_DELETE',
             true
           ),
+        },
+      },
+      pagination: {
+        pageSize: {
+          max: envToNumberOrDefault('PAGINATION_PAGE_SIZE_MAX', 100),
+          min: envToNumberOrDefault('PAGINATION_PAGE_SIZE_MIN', 2),
         },
       },
     },
@@ -64,11 +70,19 @@ export interface RepoConfig {
   };
 }
 
+export interface PaginationConfig {
+  pageSize: {
+    min: number;
+    max: number;
+  };
+}
+
 export interface Configuration {
   server: ServerConfig;
   logger: LoggerConfig;
   kenx: KnexConfig;
   repo: RepoConfig;
+  pagination: PaginationConfig;
 }
 
 function envToNumberOrDefault(env: string, defaultValue: number): number {

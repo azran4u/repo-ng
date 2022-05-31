@@ -2,6 +2,6 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  collectCoverage: true,
-  mapCoverage: true,
+  collectCoverage: false,
+  mapCoverage: false,
 };

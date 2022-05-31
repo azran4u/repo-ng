@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1653916460841" clover="3.2.0">
-  <project timestamp="1653916460842" name="All files">
-    <metrics statements="136" coveredstatements="113" conditionals="126" coveredconditionals="58" methods="33" coveredmethods="30" elements="295" coveredelements="201" complexity="0" loc="136" ncloc="136" packages="5" files="9" classes="9"/>
+<coverage generated="1653985530954" clover="3.2.0">
+  <project timestamp="1653985530954" name="All files">
+    <metrics statements="141" coveredstatements="117" conditionals="128" coveredconditionals="60" methods="33" coveredmethods="30" elements="302" coveredelements="207" complexity="0" loc="141" ncloc="141" packages="5" files="9" classes="9"/>
     <package name="dist.src.pagination">
       <metrics statements="18" coveredstatements="17" conditionals="30" coveredconditionals="14" methods="4" coveredmethods="4"/>
       <file name="pagination.service.js" path="/home/eyal/dev/repo-ng/dist/src/pagination/pagination.service.js">
@@ -86,76 +86,81 @@
       </file>
     </package>
     <package name="src.pagination">
-      <metrics statements="24" coveredstatements="21" conditionals="3" coveredconditionals="1" methods="10" coveredmethods="9"/>
+      <metrics statements="29" coveredstatements="25" conditionals="5" coveredconditionals="2" methods="10" coveredmethods="9"/>
       <file name="pagination.service.ts" path="/home/eyal/dev/repo-ng/src/pagination/pagination.service.ts">
-        <metrics statements="24" coveredstatements="21" conditionals="3" coveredconditionals="1" methods="10" coveredmethods="9"/>
+        <metrics statements="29" coveredstatements="25" conditionals="5" coveredconditionals="2" methods="10" coveredmethods="9"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="6" count="1" type="stmt"/>
         <line num="10" count="1" type="stmt"/>
         <line num="11" count="1" type="stmt"/>
-        <line num="17" count="1" type="stmt"/>
-        <line num="23" count="1" type="stmt"/>
-        <line num="32" count="1" type="stmt"/>
-        <line num="34" count="1" type="stmt"/>
-        <line num="36" count="1" type="stmt"/>
-        <line num="37" count="1" type="stmt"/>
-        <line num="40" count="1" type="stmt"/>
-        <line num="42" count="1" type="stmt"/>
-        <line num="43" count="0" type="stmt"/>
-        <line num="46" count="1" type="stmt"/>
-        <line num="48" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="49" count="1" type="stmt"/>
-        <line num="50" count="1" type="stmt"/>
-        <line num="51" count="1" type="stmt"/>
-        <line num="54" count="0" type="stmt"/>
-        <line num="55" count="0" type="stmt"/>
-        <line num="58" count="1" type="stmt"/>
-        <line num="59" count="1" type="stmt"/>
+        <line num="17" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="18" count="2" type="stmt"/>
+        <line num="21" count="2" type="cond" truecount="0" falsecount="1"/>
+        <line num="22" count="0" type="stmt"/>
+        <line num="25" count="2" type="stmt"/>
+        <line num="31" count="2" type="stmt"/>
+        <line num="40" count="2" type="stmt"/>
+        <line num="42" count="2" type="stmt"/>
+        <line num="44" count="2" type="stmt"/>
+        <line num="45" count="2" type="stmt"/>
+        <line num="48" count="2" type="stmt"/>
+        <line num="50" count="2" type="stmt"/>
+        <line num="51" count="0" type="stmt"/>
+        <line num="54" count="2" type="stmt"/>
+        <line num="55" count="2" type="stmt"/>
+        <line num="56" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="57" count="2" type="stmt"/>
+        <line num="58" count="2" type="stmt"/>
+        <line num="59" count="2" type="stmt"/>
+        <line num="62" count="0" type="stmt"/>
+        <line num="63" count="0" type="stmt"/>
+        <line num="66" count="2" type="stmt"/>
+        <line num="67" count="2" type="stmt"/>
       </file>
     </package>
     <package name="src.persistency">
       <metrics statements="25" coveredstatements="24" conditionals="6" coveredconditionals="3" methods="7" coveredmethods="6"/>
       <file name="mock.persistency.service.ts" path="/home/eyal/dev/repo-ng/src/persistency/mock.persistency.service.ts">
         <metrics statements="23" coveredstatements="22" conditionals="6" coveredconditionals="3" methods="7" coveredmethods="6"/>
-        <line num="1" count="1" type="stmt"/>
-        <line num="2" count="1" type="stmt"/>
-        <line num="5" count="1" type="stmt"/>
-        <line num="9" count="1" type="stmt"/>
-        <line num="16" count="1" type="stmt"/>
-        <line num="17" count="1" type="stmt"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="9" count="2" type="stmt"/>
+        <line num="16" count="2" type="stmt"/>
+        <line num="17" count="2" type="stmt"/>
         <line num="20" count="1" type="stmt"/>
-        <line num="27" count="1" type="cond" truecount="0" falsecount="1"/>
-        <line num="29" count="1" type="stmt"/>
-        <line num="31" count="1" type="cond" truecount="0" falsecount="1"/>
+        <line num="27" count="2" type="cond" truecount="0" falsecount="1"/>
+        <line num="29" count="2" type="stmt"/>
+        <line num="31" count="2" type="cond" truecount="0" falsecount="1"/>
         <line num="32" count="0" type="stmt"/>
-        <line num="35" count="1" type="cond" truecount="1" falsecount="0"/>
-        <line num="36" count="3" type="stmt"/>
-        <line num="39" count="1" type="cond" truecount="1" falsecount="0"/>
-        <line num="40" count="1" type="stmt"/>
-        <line num="41" count="1" type="stmt"/>
-        <line num="42" count="1" type="cond" truecount="0" falsecount="1"/>
-        <line num="43" count="1" type="stmt"/>
-        <line num="47" count="1" type="cond" truecount="1" falsecount="0"/>
-        <line num="48" count="1" type="stmt"/>
-        <line num="49" count="1" type="stmt"/>
-        <line num="52" count="1" type="stmt"/>
-        <line num="53" count="1" type="stmt"/>
+        <line num="35" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="36" count="6" type="stmt"/>
+        <line num="39" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="40" count="2" type="stmt"/>
+        <line num="41" count="2" type="stmt"/>
+        <line num="42" count="2" type="cond" truecount="0" falsecount="1"/>
+        <line num="43" count="2" type="stmt"/>
+        <line num="47" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="48" count="2" type="stmt"/>
+        <line num="49" count="2" type="stmt"/>
+        <line num="52" count="2" type="stmt"/>
+        <line num="53" count="2" type="stmt"/>
       </file>
       <file name="persistency.service.ts" path="/home/eyal/dev/repo-ng/src/persistency/persistency.service.ts">
         <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-        <line num="1" count="1" type="stmt"/>
-        <line num="7" count="1" type="stmt"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="7" count="2" type="stmt"/>
       </file>
     </package>
     <package name="src.utils">
-      <metrics statements="19" coveredstatements="12" conditionals="14" coveredconditionals="6" methods="3" coveredmethods="2"/>
+      <metrics statements="19" coveredstatements="12" conditionals="14" coveredconditionals="7" methods="3" coveredmethods="2"/>
       <file name="compare.entities.ts" path="/home/eyal/dev/repo-ng/src/utils/compare.entities.ts">
-        <metrics statements="10" coveredstatements="7" conditionals="13" coveredconditionals="6" methods="1" coveredmethods="1"/>
-        <line num="2" count="1" type="stmt"/>
-        <line num="4" count="1" type="stmt"/>
-        <line num="5" count="1" type="cond" truecount="2" falsecount="1"/>
+        <metrics statements="10" coveredstatements="7" conditionals="13" coveredconditionals="7" methods="1" coveredmethods="1"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="5" count="2" type="cond" truecount="3" falsecount="0"/>
         <line num="6" count="1" type="cond" truecount="0" falsecount="1"/>
         <line num="7" count="1" type="cond" truecount="0" falsecount="1"/>
         <line num="8" count="1" type="cond" truecount="1" falsecount="2"/>
@@ -166,9 +171,9 @@
       </file>
       <file name="exists.ts" path="/home/eyal/dev/repo-ng/src/utils/exists.ts">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="1" count="1" type="stmt"/>
-        <line num="2" count="1" type="stmt"/>
-        <line num="3" count="6" type="stmt"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="3" count="9" type="stmt"/>
       </file>
       <file name="next.dv.ts" path="/home/eyal/dev/repo-ng/src/utils/next.dv.ts">
         <metrics statements="6" coveredstatements="2" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>

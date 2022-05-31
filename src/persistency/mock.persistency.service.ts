@@ -24,7 +24,7 @@ export class MockPersistencyService extends PersistencyService {
     filter: QueryFilters,
     options?: QueryOptions
   ): Promise<QueryResult[]> {
-    const { cursor, limit, filterDeleted = false } = options;
+    const { cursor, pageSize, filterDeleted = false } = options;
 
     let stage = this.data;
 
@@ -32,7 +32,7 @@ export class MockPersistencyService extends PersistencyService {
       stage = this.data.filter((item) => item.isDeleted === false);
     }
 
-    if (exists(filter)) {
+    if (exists(filter?.byName)) {
       stage = stage.filter((item) => item.name.includes(filter.byName));
     }
 
@@ -44,9 +44,9 @@ export class MockPersistencyService extends PersistencyService {
       });
     }
 
-    if (exists(limit)) {
+    if (exists(pageSize)) {
       stage = stage.sort(compareEntities);
-      stage = stage.slice(0, limit);
+      stage = stage.slice(0, pageSize);
     }
 
     return stage.map((item) => {

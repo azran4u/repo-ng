@@ -1,19 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { maxBy } from 'lodash';
+import { AppConfigService } from '../config';
 import { PersistencyService } from '../persistency/persistency.service';
 import { Cursor } from '../utils/cursor';
-import { ID } from '../utils/id';
-import { nextDv } from '../utils/next.dv';
 import { PaginationResult } from '../utils/pagination.result';
 import { QueryFilters } from '../utils/query.filters';
 @Injectable()
 export class PaginationService {
-  constructor(private persistencyService: PersistencyService) {}
+  constructor(
+    private persistencyService: PersistencyService,
+    private configService: AppConfigService
+  ) {}
   async replicateEntities(
     queryFilters: QueryFilters,
     cursor: Cursor,
-    limit = 100
+    pageSize
   ): Promise<PaginationResult> {
+    const pageSizeConfig = this.configService.getConfig().pagination.pageSize;
+    if (pageSize < pageSizeConfig.min) {
+      pageSize = pageSizeConfig.min;
+    }
+
+    if (pageSize > pageSizeConfig.max) {
+      pageSize = pageSizeConfig.max;
+    }
+
     const result: PaginationResult = {
       updatedEntities: [],
       deletedEntities: [],
@@ -24,12 +35,14 @@ export class PaginationService {
       queryFilters,
       {
         cursor,
-        limit,
+        pageSize,
         filterDeleted: false,
       }
     );
 
-    dataIncludingDeleted.filter((item) => item.id !== cursor.id);
+    dataIncludingDeleted = dataIncludingDeleted.filter(
+      (item) => item.id !== cursor.id
+    );
 
     result.updatedEntities.push(
       ...dataIncludingDeleted
@@ -43,19 +56,16 @@ export class PaginationService {
         .map((x) => x.id)
     );
 
-    let lastId: ID = null;
-    let lastDv = maxBy(dataIncludingDeleted, (x) => +x.dv).dv;
-    if (lastDv) {
-      lastId = maxBy(
-        dataIncludingDeleted.filter((x) => x.dv === lastDv),
+    result.nextCursor.dv = maxBy(dataIncludingDeleted, (x) => +x.dv)?.dv;
+    if (result.nextCursor.dv) {
+      result.nextCursor.id = maxBy(
+        dataIncludingDeleted.filter((x) => x.dv === result.nextCursor.dv),
         (x) => x.id
-      ).id;
+      )?.id;
     } else {
-      lastDv = nextDv(cursor.dv);
-      lastId = null;
+      result.nextCursor = cursor;
     }
 
-    result.nextCursor = { dv: lastDv, id: lastId };
     return result;
   }
 }

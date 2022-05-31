@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PersistencyService } from './persistency.service';
+import { MockPersistencyService } from './mock.persistency.service';
 
 describe('PersistencyService', () => {
-  let service: PersistencyService;
+  let service: MockPersistencyService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PersistencyService],
+      providers: [MockPersistencyService],
     }).compile();
 
-    service = module.get<PersistencyService>(PersistencyService);
+    service = module.get<MockPersistencyService>(MockPersistencyService);
   });
 
   it('should be defined', () => {
