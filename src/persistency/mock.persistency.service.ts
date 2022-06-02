@@ -3,12 +3,13 @@ import { compareEntities } from '../utils/compare.entities';
 import { Cursor } from '../utils/cursor';
 import { DeletedField } from '../utils/deleted.field';
 import { exists } from '../utils/exists';
+import { IdField } from '../utils/id.field';
 import { QueryFilters } from '../utils/query.filters';
 import { QueryOptions } from '../utils/query.options';
 import { QueryResult } from '../utils/query.results';
 import { PersistencyService } from './persistency.service';
 
-export interface MockData extends Cursor, DeletedField {
+export interface MockData extends Cursor, DeletedField, IdField {
   name: string;
 }
 

@@ -19,7 +19,7 @@ describe('PaginationService', () => {
   const data: MockData[] = [
     {
       id: 'a',
-      dv: 1,
+      dv: 0,
       name: '1a',
       isDeleted: false,
     },
@@ -57,7 +57,7 @@ describe('PaginationService', () => {
 
   it('basic w/o filter', async () => {
     const filter: QueryFilters = {};
-    const initialCursor: Cursor = { dv: 1, id: null };
+    const initialCursor: Cursor = { dv: 0 };
     const pageSize = 1;
 
     const result = await replicationClient(
@@ -72,7 +72,7 @@ describe('PaginationService', () => {
 
   it('basic with filter', async () => {
     const filter: QueryFilters = { byName: 'a' };
-    const initialCursor: Cursor = { dv: 1, id: null };
+    const initialCursor: Cursor = { dv: 0 };
     const pageSize = 1;
 
     const result = await replicationClient(
@@ -87,7 +87,7 @@ describe('PaginationService', () => {
 
   it('start with higher cursor', async () => {
     const filter: QueryFilters = {};
-    const initialCursor: Cursor = { dv: 2, id: null };
+    const initialCursor: Cursor = { dv: 1 };
     const pageSize = 1;
 
     const result = await replicationClient(
@@ -102,7 +102,7 @@ describe('PaginationService', () => {
 
   it('start with out of range cursor', async () => {
     const filter: QueryFilters = {};
-    const initialCursor: Cursor = { dv: 3, id: null };
+    const initialCursor: Cursor = { dv: 3 };
     const pageSize = 1;
 
     const result = await replicationClient(
@@ -117,7 +117,7 @@ describe('PaginationService', () => {
 
   it('null cursor', async () => {
     const filter: QueryFilters = {};
-    const initialCursor: Cursor = { dv: null, id: null };
+    const initialCursor: Cursor = { dv: null };
     const pageSize = 1;
 
     const result = await replicationClient(
@@ -162,7 +162,7 @@ describe('random data', () => {
 
   it('from start no filter', async () => {
     const filter: QueryFilters = {};
-    const initialCursor: Cursor = { dv: null, id: null };
+    const initialCursor: Cursor = { dv: null };
     const pageSize = 1;
 
     const result = await replicationClient(

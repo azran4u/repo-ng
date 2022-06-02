@@ -25,10 +25,14 @@ export class PaginationService {
       pageSize = pageSizeConfig.max;
     }
 
+    if (isNil(cursor?.dv)) {
+      cursor.dv = 0;
+    }
+
     const result: PaginationResult = {
       updatedEntities: [],
       deletedEntities: [],
-      nextCursor: { dv: null, id: null },
+      nextCursor: { dv: 0 },
     };
 
     let dataIncludingDeleted = await this.persistencyService.queryEntity(
@@ -41,7 +45,7 @@ export class PaginationService {
     );
 
     dataIncludingDeleted = dataIncludingDeleted.filter(
-      (item) => item.id !== cursor?.id
+      (item) => item.dv !== cursor?.dv
     );
 
     result.updatedEntities.push(
@@ -57,12 +61,7 @@ export class PaginationService {
     );
 
     result.nextCursor.dv = maxBy(dataIncludingDeleted, (x) => x.dv)?.dv;
-    if (isNil(result.nextCursor.dv)) {
-      result.nextCursor.id = maxBy(
-        dataIncludingDeleted.filter((x) => x.dv === result.nextCursor.dv),
-        (x) => x.id
-      )?.id;
-    } else {
+    if (!isNil(result.nextCursor.dv)) {
       result.nextCursor = cursor;
     }
 
