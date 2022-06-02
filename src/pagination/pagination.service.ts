@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { maxBy } from 'lodash';
+import { isNil, maxBy } from 'lodash';
 import { AppConfigService } from '../config';
 import { PersistencyService } from '../persistency/persistency.service';
 import { Cursor } from '../utils/cursor';
@@ -41,7 +41,7 @@ export class PaginationService {
     );
 
     dataIncludingDeleted = dataIncludingDeleted.filter(
-      (item) => item.id !== cursor.id
+      (item) => item.id !== cursor?.id
     );
 
     result.updatedEntities.push(
@@ -56,8 +56,8 @@ export class PaginationService {
         .map((x) => x.id)
     );
 
-    result.nextCursor.dv = maxBy(dataIncludingDeleted, (x) => +x.dv)?.dv;
-    if (result.nextCursor.dv) {
+    result.nextCursor.dv = maxBy(dataIncludingDeleted, (x) => x.dv)?.dv;
+    if (isNil(result.nextCursor.dv)) {
       result.nextCursor.id = maxBy(
         dataIncludingDeleted.filter((x) => x.dv === result.nextCursor.dv),
         (x) => x.id
