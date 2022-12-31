@@ -1,32 +1,33 @@
-import { MiddlewareConsumer, Module } from "@nestjs/common";
-import { GraphQLModule } from "@nestjs/graphql";
-import { json } from "express";
-import { GraphQLError, GraphQLFormattedError } from "graphql";
-import { WinstonModule } from "nest-winston";
-import { CommonModule } from "./common/common.module";
-import { AppConfigModule, AppConfigService } from "./config";
-import { DalModule } from "./dal/dal.module";
-import { CatsModule } from "./entities/cats/cats.module";
-import { createContainersLoader } from "./entities/container/containers.loader";
-import { ContainersModule } from "./entities/container/containers.module";
-import { ContainerService } from "./entities/container/containers.service";
+import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { GraphQLModule } from '@nestjs/graphql';
+import { json } from 'express';
+import { GraphQLError, GraphQLFormattedError } from 'graphql';
+import { WinstonModule } from 'nest-winston';
+import { CommonModule } from './common/common.module';
+import { AppConfigModule, AppConfigService } from './config';
+import { DalModule } from './dal/dal.module';
+import { CatsModule } from './entities/cats/cats.module';
+import { createContainersLoader } from './entities/container/containers.loader';
+import { ContainersModule } from './entities/container/containers.module';
+import { ContainerService } from './entities/container/containers.service';
 import {
   createItemsLoader,
   createOfficeEquipmentItemsLoader,
   createOfficeFurnitureItemsLoader,
   createSoftwareItemsLoader,
-} from "./entities/items/items.loader";
-import { ItemsModule } from "./entities/items/items.module";
-import { ItemsService } from "./entities/items/items.service";
-import { createOwnersLoader } from "./entities/owners/owners.loader";
-import { OwnersModule } from "./entities/owners/owners.module";
-import { OwnersService } from "./entities/owners/owners.service";
-import { loggerOptionsFactory } from "./logger/logger";
-import { RequestDurationMiddleware } from "./utils/express.request.duration";
-import { GraphqlExtractOperationMiddleware } from "./utils/graphql.extract.operation.middleware";
-import { isProd } from "./utils/is.prod";
+} from './entities/items/items.loader';
+import { ItemsModule } from './entities/items/items.module';
+import { ItemsService } from './entities/items/items.service';
+import { createOwnersLoader } from './entities/owners/owners.loader';
+import { OwnersModule } from './entities/owners/owners.module';
+import { OwnersService } from './entities/owners/owners.service';
+import { loggerOptionsFactory } from './logger/logger';
 import { PaginationModule } from './pagination/pagination.module';
 import { PersistencyModule } from './persistency/persistency.module';
+import { RequestDurationMiddleware } from './utils/express.request.duration';
+import { UserMiddleware } from './utils/express.user.middleware';
+import { GraphqlExtractOperationMiddleware } from './utils/graphql.extract.operation.middleware';
+import { isProd } from './utils/is.prod';
 
 @Module({
   imports: [
@@ -46,7 +47,7 @@ import { PersistencyModule } from './persistency/persistency.module';
         containerService: ContainerService,
         itemsService: ItemsService
       ) => ({
-        typePaths: ["./**/*.graphql"],
+        typePaths: ['./**/*.graphql'],
         context: () => ({
           randomValue: Math.random(),
           ownersLoader: createOwnersLoader(ownersService),
@@ -86,6 +87,7 @@ export class AppModule {
         RequestDurationMiddleware,
         GraphqlExtractOperationMiddleware
       )
-      .forRoutes("*");
+      .forRoutes('*');
+    consumer.apply(UserMiddleware);
   }
 }
